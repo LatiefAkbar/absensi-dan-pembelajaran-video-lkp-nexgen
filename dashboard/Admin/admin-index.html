@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PresensiNex - Dashboard Admin</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="admin-style.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="text-gray-100">
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo">
+            <span>PN</span>
+        </div>
+        <div class="spinner"></div>
+        <div class="loading-text">Menyiapkan Dashboard Admin...</div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav-header shadow-2xl py-4 px-6 sticky top-0 z-50">
+        <div class="container mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <div class="bg-gradient-to-br from-blue-600 to-purple-600 text-white w-10 h-10 rounded-xl flex items-center justify-center font-bold text-xl shadow-lg">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold gradient-text">PresensiNex</h1>
+                    <p class="text-gray-400 text-sm">Dashboard Administrator</p>
+                </div>
+            </div>
+            
+            <div class="flex items-center space-x-6">
+                <!-- System Status -->
+                <div class="hidden lg:flex items-center space-x-6">
+                    <div class="flex items-center space-x-2">
+                        <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                        <span class="text-sm text-gray-400">Sistem Aktif</span>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-xs text-gray-400">Total Pengguna</div>
+                        <div class="font-semibold text-blue-400">158</div>
+                    </div>
+                </div>
+                
+                <!-- Notifications -->
+                <div class="relative group">
+                    <button class="relative p-2 text-gray-400 hover:text-white transition-colors">
+                        <i class="fas fa-bell text-xl"></i>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <div class="absolute right-0 mt-2 w-80 bg-gray-800 rounded-lg shadow-xl py-2 hidden group-hover:block z-50 border border-gray-700">
+                        <div class="px-4 py-2 border-b border-gray-700">
+                            <h4 class="font-semibold text-white">Notifikasi (3)</h4>
+                        </div>
+                        <div class="max-h-80 overflow-y-auto">
+                            <a href="#" class="block px-4 py-3 hover:bg-gray-700 transition-colors border-b border-gray-700">
+                                <div class="font-medium text-white">Presensi belum diproses</div>
+                                <div class="text-sm text-gray-400">3 instruktur belum melakukan presensi hari ini</div>
+                                <div class="text-xs text-blue-400 mt-1">10 menit lalu</div>
+                            </a>
+                            <a href="#" class="block px-4 py-3 hover:bg-gray-700 transition-colors border-b border-gray-700">
+                                <div class="font-medium text-white">Peserta baru mendaftar</div>
+                                <div class="text-sm text-gray-400">5 peserta baru mendaftar kursus</div>
+                                <div class="text-xs text-blue-400 mt-1">1 jam lalu</div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- User Profile -->
+                <div class="flex items-center space-x-4">
+                    <div class="text-right hidden md:block">
+                        <div class="font-semibold text-white">Admin Sistem</div>
+                        <div class="text-sm text-gray-400">Super Administrator</div>
+                    </div>
+                    <div class="relative group">
+                        <div class="w-10 h-10 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center font-bold text-white cursor-pointer hover:scale-105 transition-transform">
+                            <i class="fas fa-user-cog"></i>
+                        </div>
+                        <div class="absolute right-0 mt-2 w-48 bg-gray-800 rounded-lg shadow-xl py-2 hidden group-hover:block z-50 border border-gray-700">
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+                                <i class="fas fa-cog mr-2"></i>Pengaturan Sistem
+                            </a>
+                            <a href="#" class="block px-4 py-2 text-sm text-gray-300 hover:bg-gray-700 hover:text-white transition-colors">
+                                <i class="fas fa-database mr-2"></i>Backup Data
+                            </a>
+                            <div class="border-t border-gray-700 my-1"></div>
+                            <a href="#" class="block px-4 py-2 text-sm text-red-400 hover:bg-red-900/20 transition-colors" id="adminLogoutBtn">
+                                <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb">
+            <div class="breadcrumb-item">
+                <i class="fas fa-home text-blue-400"></i>
+                <span>Dashboard</span>
+            </div>
+            <div class="breadcrumb-separator">
+                <i class="fas fa-chevron-right"></i>
+            </div>
+            <div class="breadcrumb-item">
+                <i class="fas fa-user-shield text-blue-400"></i>
+                <span>Admin Panel</span>
+            </div>
+        </div>
+
+        <!-- Admin Header -->
+        <div class="admin-header p-6 mb-8">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6">
+                <div>
+                    <h2 class="text-3xl font-bold text-white mb-2">Panel Kontrol Administrator</h2>
+                    <p class="text-gray-400">Kelola seluruh sistem presensi dan pengguna</p>
+                </div>
+                <div class="mt-4 lg:mt-0">
+                    <div class="flex items-center space-x-4">
+                        <div class="text-right">
+                            <div class="text-sm text-gray-400">Status Sistem</div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></div>
+                                <span class="font-semibold text-emerald-400">Aktif</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-purple" onclick="backupSystem()">
+                            <i class="fas fa-database mr-2"></i>Backup
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- System Stats -->
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                <div class="admin-stat-card p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-sm text-gray-400">Total Pengguna</div>
+                            <div class="text-2xl font-bold text-white">158</div>
+                        </div>
+                        <i class="fas fa-users text-blue-400 text-xl"></i>
+                    </div>
+                    <div class="mt-3 text-xs text-emerald-400">
+                        <i class="fas fa-arrow-up mr-1"></i> 12 bulan ini
+                    </div>
+                </div>
+                
+                <div class="admin-stat-card p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-sm text-gray-400">Instruktur Aktif</div>
+                            <div class="text-2xl font-bold text-white">8</div>
+                        </div>
+                        <i class="fas fa-chalkboard-teacher text-purple-400 text-xl"></i>
+                    </div>
+                    <div class="mt-3 text-xs text-emerald-400">
+                        <i class="fas fa-arrow-up mr-1"></i> +2 bulan lalu
+                    </div>
+                </div>
+                
+                <div class="admin-stat-card p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-sm text-gray-400">Kursus Aktif</div>
+                            <div class="text-2xl font-bold text-white">12</div>
+                        </div>
+                        <i class="fas fa-book text-emerald-400 text-xl"></i>
+                    </div>
+                    <div class="mt-3 text-xs text-emerald-400">
+                        <i class="fas fa-arrow-up mr-1"></i> 3 kursus baru
+                    </div>
+                </div>
+                
+                <div class="admin-stat-card p-5">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-sm text-gray-400">Presensi Hari Ini</div>
+                            <div class="text-2xl font-bold text-emerald-400">142</div>
+                        </div>
+                        <i class="fas fa-clipboard-check text-amber-400 text-xl"></i>
+                    </div>
+                    <div class="mt-3 text-xs text-gray-400">
+                        <i class="fas fa-clock mr-1"></i> 86% complete
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="admin-tab flex overflow-x-auto mb-8">
+            <button class="admin-tab-btn active" data-tab="overview">
+                <i class="fas fa-tachometer-alt"></i>Overview
+            </button>
+            <button class="admin-tab-btn" data-tab="users">
+                <i class="fas fa-users-cog"></i>Manajemen Pengguna
+            </button>
+            <button class="admin-tab-btn" data-tab="courses">
+                <i class="fas fa-book"></i>Manajemen Kursus
+            </button>
+            <button class="admin-tab-btn" data-tab="reports">
+                <i class="fas fa-chart-bar"></i>Laporan Sistem
+            </button>
+            <button class="admin-tab-btn" data-tab="settings">
+                <i class="fas fa-cogs"></i>Pengaturan
+            </button>
+            <button class="admin-tab-btn" data-tab="logs">
+                <i class="fas fa-history"></i>Log Sistem
+            </button>
+        </div>
+
+        <!-- Tab Content -->
+        <div id="adminTabContent">
+            <div class="tab-pane active" id="overviewTab">
+                <div class="grid grid-cols-1 lg:grid-cols-1 gap-8 mb-8">
+                    <div class="admin-card">
+                        <div class="p-6 border-b border-gray-800">
+                            <h3 class="text-xl font-bold text-white flex items-center">
+                                <i class="fas fa-bolt mr-3 text-amber-400"></i>
+                                Aksi Cepat
+                            </h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                                <button class="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors" onclick="switchTab('users')">
+                                    <div class="w-12 h-12 bg-blue-500/20 rounded-xl flex items-center justify-center mb-3">
+                                        <i class="fas fa-user-plus text-2xl text-blue-400"></i>
+                                    </div>
+                                    <div class="font-semibold text-white">Tambah Pengguna</div>
+                                    <div class="text-xs text-gray-400 text-center">Tambahkan pengguna baru</div>
+                                </button>
+                                
+                                <button class="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors" onclick="switchTab('courses')">
+                                    <div class="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center mb-3">
+                                        <i class="fas fa-plus-circle text-2xl text-purple-400"></i>
+                                    </div>
+                                    <div class="font-semibold text-white">Buat Kursus</div>
+                                    <div class="text-xs text-gray-400 text-center">Buat kursus baru</div>
+                                </button>
+                                
+                                <button class="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors" onclick="generateSystemReport()">
+                                    <div class="w-12 h-12 bg-emerald-500/20 rounded-xl flex items-center justify-center mb-3">
+                                        <i class="fas fa-file-export text-2xl text-emerald-400"></i>
+                                    </div>
+                                    <div class="font-semibold text-white">Export Data</div>
+                                    <div class="text-xs text-gray-400 text-center">Export data sistem</div>
+                                </button>
+                                
+                                <button class="flex flex-col items-center p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors" onclick="showSystemSettings()">
+                                    <div class="w-12 h-12 bg-amber-500/20 rounded-xl flex items-center justify-center mb-3">
+                                        <i class="fas fa-cog text-2xl text-amber-400"></i>
+                                    </div>
+                                    <div class="font-semibold text-white">Pengaturan</div>
+                                    <div class="text-xs text-gray-400 text-center">Ubah pengaturan sistem</div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Activity -->
+                <div class="admin-card mb-8">
+                    <div class="p-6 border-b border-gray-800">
+                        <h3 class="text-xl font-bold text-white flex items-center">
+                            <i class="fas fa-history mr-3 text-purple-400"></i>
+                            Aktivitas Terbaru
+                        </h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded-xl">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-10 h-10 bg-blue-500/20 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-user-plus text-blue-400"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-white">Peserta baru terdaftar</div>
+                                        <div class="text-sm text-gray-400">Ahmad Fauzi mendaftar kursus Komputer Dasar</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm text-blue-400">10:30</div>
+                                    <div class="text-xs text-gray-500">Hari ini</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded-xl">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-10 h-10 bg-emerald-500/20 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-check-circle text-emerald-400"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-white">Presensi diproses</div>
+                                        <div class="text-sm text-gray-400">Instruktur Budi memproses 15 presensi</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm text-emerald-400">09:15</div>
+                                    <div class="text-xs text-gray-500">Hari ini</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded-xl">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-10 h-10 bg-purple-500/20 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-book text-purple-400"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-white">Kursus baru dibuat</div>
+                                        <div class="text-sm text-gray-400">Kursus "Design Grafis" berhasil dibuat</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm text-purple-400">08:45</div>
+                                    <div class="text-xs text-gray-500">Hari ini</div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-center justify-between p-3 bg-gray-800/50 rounded-xl">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-10 h-10 bg-amber-500/20 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-cog text-amber-400"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-medium text-white">Pengaturan diubah</div>
+                                        <div class="text-sm text-gray-400">Admin mengubah pengaturan sistem</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm text-amber-400">08:00</div>
+                                    <div class="text-xs text-gray-500">Hari ini</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Management Tab -->
+            <div class="tab-pane hidden" id="usersTab">
+                <div class="admin-card mb-6">
+                    <div class="p-6 border-b border-gray-800">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
+                            <h3 class="text-xl font-bold text-white">Manajemen Pengguna</h3>
+                            <div class="flex space-x-3">
+                                <button class="btn btn-primary" onclick="showAddUserModal()">
+                                    <i class="fas fa-user-plus mr-2"></i>Tambah Pengguna
+                                </button>
+                                <button class="btn btn-outline border-gray-700 text-gray-300 hover:bg-gray-800">
+                                    <i class="fas fa-filter mr-2"></i>Filter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-6">
+                        <div class="overflow-x-auto">
+                            <table class="admin-table w-full">
+                                <thead>
+                                    <tr>
+                                        <th class="p-4 text-left">Nama</th>
+                                        <th class="p-4 text-left">Role</th>
+                                        <th class="p-4 text-left">Email</th>
+                                        <th class="p-4 text-left">Status</th>
+                                        <th class="p-4 text-left">Terakhir Login</th>
+                                        <th class="p-4 text-left">Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="usersTableBody">
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        
+            <div class="tab-pane hidden" id="coursesTab">
+                <div class="admin-card">
+                    <div class="p-6 border-b border-gray-800">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-xl font-bold text-white">Manajemen Kursus</h3>
+                            <button class="btn btn-success" onclick="showAddCourseModal()">
+                                <i class="fas fa-plus mr-2"></i>Tambah Kursus
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="coursesGrid">
+                            <!-- Courses will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reports Tab -->
+            <div class="tab-pane hidden" id="reportsTab">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="admin-card">
+                        <div class="p-6 border-b border-gray-800">
+                            <h3 class="text-xl font-bold text-white">Laporan Sistem</h3>
+                        </div>
+                        <div class="p-6">
+                            <div class="space-y-4">
+                                <button class="w-full flex items-center justify-between p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors" onclick="generateReport('attendance')">
+                                    <div class="flex items-center space-x-4">
+                                        <i class="fas fa-clipboard-check text-2xl text-blue-400"></i>
+                                        <div>
+                                            <div class="font-semibold text-white">Laporan Presensi</div>
+                                            <div class="text-sm text-gray-400">Data kehadiran semua peserta</div>
+                                        </div>
+                                    </div>
+                                    <i class="fas fa-chevron-right text-gray-400"></i>
+                                </button>
+                                
+                                <button class="w-full flex items-center justify-between p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors" onclick="generateReport('financial')">
+                                    <div class="flex items-center space-x-4">
+                                        <i class="fas fa-money-bill-wave text-2xl text-emerald-400"></i>
+                                        <div>
+                                            <div class="font-semibold text-white">Laporan Keuangan</div>
+                                            <div class="text-sm text-gray-400">Ringkasan pendapatan dan biaya</div>
+                                        </div>
+                                    </div>
+                                    <i class="fas fa-chevron-right text-gray-400"></i>
+                                </button>
+                                
+                                <button class="w-full flex items-center justify-between p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors" onclick="generateReport('performance')">
+                                    <div class="flex items-center space-x-4">
+                                        <i class="fas fa-chart-bar text-2xl text-purple-400"></i>
+                                        <div>
+                                            <div class="font-semibold text-white">Laporan Performa</div>
+                                            <div class="text-sm text-gray-400">Analisis performa instruktur</div>
+                                        </div>
+                                    </div>
+                                    <i class="fas fa-chevron-right text-gray-400"></i>
+                                </button>
+                                
+                                <button class="w-full flex items-center justify-between p-4 bg-gray-800/50 rounded-xl hover:bg-gray-800 transition-colors" onclick="generateReport('users')">
+                                    <div class="flex items-center space-x-4">
+                                        <i class="fas fa-users text-2xl text-amber-400"></i>
+                                        <div>
+                                            <div class="font-semibold text-white">Laporan Pengguna</div>
+                                            <div class="text-sm text-gray-400">Statistik pertumbuhan pengguna</div>
+                                        </div>
+                                    </div>
+                                    <i class="fas fa-chevron-right text-gray-400"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="admin-card">
+                        <div class="p-6 border-b border-gray-800">
+                            <h3 class="text-xl font-bold text-white">Statistik Detail</h3>
+                        </div>
+                        <div class="p-6">
+                            <canvas id="detailedReportChart" height="300"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Tab -->
+            <div class="tab-pane hidden" id="settingsTab">
+                <div class="admin-card">
+                    <div class="p-6 border-b border-gray-800">
+                        <h3 class="text-xl font-bold text-white">Pengaturan Sistem</h3>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-6">
+                            <div>
+                                <h4 class="text-lg font-semibold text-white mb-4">Umum</h4>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <div class="font-medium text-white">Nama Lembaga</div>
+                                            <div class="text-sm text-gray-400">Nama yang ditampilkan di sistem</div>
+                                        </div>
+                                        <input type="text" class="px-4 py-2 w-64" value="LKP NexGen">
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <div class="font-medium text-white">Timezone</div>
+                                            <div class="text-sm text-gray-400">Zona waktu sistem</div>
+                                        </div>
+                                        <select class="px-4 py-2 w-64">
+                                            <option>WIB (UTC+7)</option>
+                                            <option>WITA (UTC+8)</option>
+                                            <option>WIT (UTC+9)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="text-lg font-semibold text-white mb-4">Keamanan</h4>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <div class="font-medium text-white">Auto Logout</div>
+                                            <div class="text-sm text-gray-400">Otomatis logout setelah 30 menit tidak aktif</div>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <div class="font-medium text-white">Two-Factor Authentication</div>
+                                            <div class="text-sm text-gray-400">Verifikasi dua langkah untuk admin</div>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 class="text-lg font-semibold text-white mb-4">Notifikasi</h4>
+                                <div class="space-y-4">
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <div class="font-medium text-white">Email Notifikasi</div>
+                                            <div class="text-sm text-gray-400">Kirim notifikasi via email</div>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox" checked>
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between">
+                                        <div>
+                                            <div class="font-medium text-white">WhatsApp Notifikasi</div>
+                                            <div class="text-sm text-gray-400">Kirim notifikasi via WhatsApp</div>
+                                        </div>
+                                        <label class="toggle-switch">
+                                            <input type="checkbox">
+                                            <span class="toggle-slider"></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-8 flex justify-end">
+                            <button class="btn btn-primary" onclick="saveSystemSettings()">
+                                <i class="fas fa-save mr-2"></i>Simpan Pengaturan
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- System Logs Tab -->
+            <div class="tab-pane hidden" id="logsTab">
+                <div class="admin-card">
+                    <div class="p-6 border-b border-gray-800">
+                        <div class="flex justify-between items-center">
+                            <h3 class="text-xl font-bold text-white">Log Sistem</h3>
+                            <div class="flex space-x-3">
+                                <button class="btn btn-outline border-gray-700 text-gray-300 hover:bg-gray-800" onclick="clearLogs()">
+                                    <i class="fas fa-trash mr-2"></i>Hapus Log
+                                </button>
+                                <button class="btn btn-primary" onclick="exportLogs()">
+                                    <i class="fas fa-download mr-2"></i>Export Log
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-3">
+                            <div class="p-4 bg-gray-800/50 rounded-xl">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="font-medium text-white">Login Admin</div>
+                                    <div class="text-sm text-blue-400">10:30:15</div>
+                                </div>
+                                <div class="text-sm text-gray-400">Admin login dari IP 192.168.1.100</div>
+                            </div>
+                            
+                            <div class="p-4 bg-gray-800/50 rounded-xl">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="font-medium text-white">User Created</div>
+                                    <div class="text-sm text-emerald-400">09:45:22</div>
+                                </div>
+                                <div class="text-sm text-gray-400">Peserta baru dibuat: Ahmad Fauzi (PES-2026-001)</div>
+                            </div>
+                            
+                            <div class="p-4 bg-gray-800/50 rounded-xl">
+                                <div class="flex items-center justify-between mb-2">
+                                    <div class="font-medium text-white">Course Created</div>
+                                    <div class="text-sm text-purple-400">09:30:10</div>
+                                </div>
+                                <div class="text-sm text-gray-400">Kursus baru dibuat: Design Grafis (CRS-004)</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modals -->
+    <!-- Add User Modal -->
+    <div class="modal" id="addUserModal">
+        <div class="modal-content admin-modal">
+            <div class="modal-header">
+                <h3 class="text-xl font-bold">Tambah Pengguna Baru</h3>
+            </div>
+            
+            <div class="modal-body">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Role</label>
+                        <div class="grid grid-cols-3 gap-3">
+                            <button class="py-3 rounded-xl font-semibold bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 border border-blue-500/30 transition-all user-role-btn" data-role="admin" onclick="selectUserRole('admin')">
+                                Admin
+                            </button>
+                            <button class="py-3 rounded-xl font-semibold bg-purple-500/20 text-purple-400 hover:bg-purple-500/30 border border-purple-500/30 transition-all user-role-btn" data-role="instructor" onclick="selectUserRole('instructor')">
+                                Instruktur
+                            </button>
+                            <button class="py-3 rounded-xl font-semibold bg-emerald-500/20 text-emerald-400 hover:bg-emerald-500/30 border border-emerald-500/30 transition-all user-role-btn" data-role="student" onclick="selectUserRole('student')">
+                                Peserta
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Nama Lengkap</label>
+                        <input type="text" class="w-full px-4 py-3" id="userFullName" placeholder="Masukkan nama lengkap">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Email</label>
+                        <input type="email" class="w-full px-4 py-3" id="userEmail" placeholder="email@lembaga.com">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Password</label>
+                        <input type="password" class="w-full px-4 py-3" id="userPassword" placeholder="Password minimal 8 karakter">
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="px-6 py-3 bg-gray-800 text-gray-300 rounded-xl font-semibold hover:bg-gray-700 mr-3 transition-colors" onclick="closeAdminModal('addUserModal')">
+                    Batal
+                </button>
+                <button class="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-500 text-white rounded-xl font-semibold hover:opacity-90 transition-all" onclick="saveNewUser()">
+                    <i class="fas fa-save mr-2"></i>Simpan
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Course Modal -->
+    <div class="modal" id="addCourseModal">
+        <div class="modal-content admin-modal">
+            <div class="modal-header">
+                <h3 class="text-xl font-bold">Tambah Kursus Baru</h3>
+            </div>
+            
+            <div class="modal-body">
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Nama Kursus</label>
+                        <input type="text" class="w-full px-4 py-3" id="courseName" placeholder="Contoh: Komputer Dasar">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Deskripsi</label>
+                        <textarea rows="3" class="w-full px-4 py-3" id="courseDescription" placeholder="Deskripsi kursus..."></textarea>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-300 text-sm font-semibold mb-2">Durasi (Jam)</label>
+                            <input type="number" class="w-full px-4 py-3" id="courseDuration" value="40">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-gray-300 text-sm font-semibold mb-2">Biaya</label>
+                            <input type="text" class="w-full px-4 py-3" id="courseFee" placeholder="Rp 1.500.000">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-gray-300 text-sm font-semibold mb-2">Instruktur</label>
+                        <select class="w-full px-4 py-3" id="courseInstructor">
+                            <option value="">Pilih Instruktur</option>
+                            <option value="INS-001">Ekal Arga Fraizy</option>
+                            <option value="INS-002">Budi Santoso</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="modal-footer">
+                <button class="px-6 py-3 bg-gray-800 text-gray-300 rounded-xl font-semibold hover:bg-gray-700 mr-3 transition-colors" onclick="closeAdminModal('addCourseModal')">
+                    Batal
+                </button>
+                <button class="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-xl font-semibold hover:opacity-90 transition-all" onclick="saveNewCourse()">
+                    <i class="fas fa-plus mr-2"></i>Tambah Kursus
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast hidden" id="adminToast">
+        <i class="fas fa-check-circle"></i>
+        <span id="adminToastMessage">Operasi berhasil!</span>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8">
+        <div class="container mx-auto px-4 text-center">
+            <div class="mb-6">
+                <div class="inline-flex bg-gradient-to-br from-blue-600 to-purple-600 text-white w-14 h-14 rounded-2xl items-center justify-center font-bold text-2xl shadow-lg">
+                    PN
+                </div>
+            </div>
+            <h3 class="text-lg font-bold mb-2 gradient-text">PresensiNex - Admin Panel</h3>
+            <p class="text-gray-500 text-sm mb-6">v2.1.0 © 2026 LKP NexGen</p>
+            <div class="text-xs text-gray-600">
+                <p>Hak akses: Administrator Sistem</p>
+                <p class="mt-1">Terakhir diakses: <span id="lastAccessTime"></span></p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="admin-script.js"></script>
+</body>
+</html>
