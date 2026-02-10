@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PresensiNex - Dashboard Karyawan</title>
+    <link rel="icon" type="image/png" href="logonex.png">
+    <link rel="shortcut icon" href="logonex.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="text-gray-100 dark-mode">
+    <div class="fixed top-4 right-4 z-50">
+        <div class="theme-toggle" id="themeToggle">
+        </div>
+    </div>
+
+    <!-- Loading Screen -->
+<div class="loading-screen" id="loadingScreen">
+    <div class="loading-logo">
+        <div class="relative w-28 h-28">
+            <div class="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 via-teal-500 to-blue-500 p-1 animate-spin-slow">
+                <div class="w-full h-full rounded-full bg-gray-900"></div>
+            </div>
+            <div class="absolute inset-2 rounded-full overflow-hidden border-4 border-white/30">
+                <img src="logonex.png" alt="PresensiNex Logo" class="w-full h-full object-cover">
+            </div>
+            <div class="absolute -inset-2 rounded-full bg-gradient-to-r from-blue-500/20 to-teal-500/20 blur-xl animate-pulse"></div>
+        </div>
+    </div>
+    <div class="spinner"></div>
+    <div class="loading-text">Menyiapkan Dashboard Anda...</div>
+</div>
+    <!-- Navigation Header -->
+    <nav class="nav-header shadow-xl py-4 px-6 sticky top-0 z-40">
+    <div class="container flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white/20">
+                <img src="logonex.png" alt="PresensiNex" class="w-full h-full object-cover">
+            </div>
+            <div class="leading-tight">
+                <h1 class="text-xl font-bold text-white">PresensiNex</h1>
+                <p class="text-gray-400 text-sm -mt-0.5 font-medium">Dashboard Karyawan</p>
+            </div>
+        </div>
+        
+        <div class="user-profile" id="userProfile">
+            <div class="user-avatar" id="userAvatar">A</div>
+            <div class="user-info">
+                <div class="user-name" id="userName">Ahmad Fauzi</div>
+                <div class="user-role" id="userRole">Karyawan</div>
+            </div>
+            <button class="ml-4 px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:opacity-90 transition-all" id="logoutBtn">
+                <i class="fas fa-sign-out-alt mr-2"></i> Logout
+            </button>
+        </div>
+    </div>  
+</nav>
+
+    <!-- Main Content -->
+    <div class="container px-4 py-8">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header p-8 mb-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                <div>
+                    <h2 class="text-3xl font-bold text-white mb-2">Selamat Datang, <span class="gradient-text" id="welcomeName">Ahmad</span>!</h2>
+                    <p class="text-gray-400">Pantau data karyawan dan kehadiran Anda di LKP NexGen</p>
+                </div>
+                <div class="mt-4 md:mt-0">
+                    <div class="text-sm text-gray-400">ID Karyawan:</div>
+                    <div class="font-mono font-semibold text-blue-300" id="employeeId">KRY-2026-001</div>
+                </div>
+            </div>
+
+            <!-- Tab Navigation -->
+            <div class="tab-nav">
+                <button class="tab-btn active" data-tab="data-karyawan">
+                    <i class="fas fa-user mr-2"></i>Data Karyawan
+                </button>
+                <button class="tab-btn" data-tab="presensi">
+                    <i class="fas fa-calendar-check mr-2"></i>Presensi
+                </button>
+                <button class="tab-btn" data-tab="tugas">
+                    <i class="fas fa-tasks mr-2"></i>Tugas
+                </button>
+                <button class="tab-btn" data-tab="gaji-cuti">
+                    <i class="fas fa-money-bill-wave mr-2"></i> Cuti
+                </button>
+            </div>
+        </div>
+
+        <!-- Tab Content -->
+        <div id="tabContent">
+            <!-- Data Karyawan -->
+            <div class="tab-pane active" id="data-karyawanTab">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Profil Karyawan -->
+                    <div class="lg:col-span-1">
+                        <div class="card p-6">
+                            <h3 class="text-xl font-bold text-white mb-6">Profil Karyawan</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-center">
+                                    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500 to-teal-500 flex items-center justify-center text-white text-2xl font-bold mr-4">
+                                        AF
+                                    </div>
+                                    <div>
+                                        <h4 class="font-bold text-lg" id="employeeFullName">Ahmad Fauzi</h4>
+                                        <p class="text-gray-400" id="employeePosition">Staff Administrasi</p>
+                                        <span class="status-badge status-hadir mt-2">Aktif</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="space-y-3">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-400">NIK:</span>
+                                        <span class="font-semibold" id="employeeNik">1234567890123456</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-400">Departemen:</span>
+                                        <span class="font-semibold" id="employeeDepartment">Administrasi</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-400">Tanggal Bergabung:</span>
+                                        <span class="font-semibold" id="employeeJoinDate">01 Januari 2025</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-400">Email:</span>
+                                        <span class="font-semibold" id="employeeEmail">ahmad.fauzi@nexgen.com</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-400">Telepon:</span>
+                                        <span class="font-semibold" id="employeePhone">0812-3456-7890</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bagian Kanan: Tabel Data Karyawan -->
+                    <div class="lg:col-span-2">
+                        <div class="card">
+                            <div class="p-6 border-b border-gray-800">
+                                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-white">Data Karyawan</h3>
+                                        <p class="text-gray-400 text-sm mt-1">Lihat data semua karyawan</p>
+                                    </div>
+                                    <div class="flex gap-2 flex-wrap">
+                                        <button class="btn btn-secondary" id="btnRefresh">
+                                            <i class="fas fa-sync-alt mr-2"></i>Refresh
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Tabel Data Karyawan -->
+                            <div class="overflow-x-auto">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th class="pl-6">Karyawan</th>
+                                            <th>ID</th>
+                                            <th>Departemen</th>
+                                            <th>Posisi</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="karyawanTableBody">
+                                        <!-- Data akan diisi oleh JavaScript -->
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <!-- Pagination -->
+                            <div class="pagination-container">
+                                <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                                    <div class="text-sm text-gray-400">
+                                        Menampilkan <span id="startRow" class="font-semibold text-white">0</span>-<span id="endRow" class="font-semibold text-white">0</span> dari <span id="totalRows" class="font-semibold text-white">0</span> karyawan
+                                    </div>
+                                    <div class="flex items-center space-x-2">
+                                        <button id="prevPage" class="pagination-btn" disabled>
+                                            <i class="fas fa-chevron-left"></i>
+                                        </button>
+                                        <div id="pageNumbers" class="flex space-x-1"></div>
+                                        <button id="nextPage" class="pagination-btn" disabled>
+                                            <i class="fas fa-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Presensi -->
+            <div class="tab-pane hidden" id="presensiTab">
+                <div class="card">
+                    <div class="p-6 border-b border-gray-800">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-white">Input Presensi Karyawan</h3>
+                                <p class="text-gray-400 text-sm mt-1">Input kehadiran per individu berdasarkan nama, posisi, dan waktu</p>
+                            </div>
+                            <div class="text-sm text-gray-400">
+                                <i class="fas fa-calendar-day mr-2"></i>
+                                <span id="currentAttendanceDate"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filter Presensi -->
+                    <div class="p-6 border-b border-gray-800">
+                        <div class="flex flex-col md:flex-row gap-4">
+                            <div class="flex-1">
+                                <input type="date" id="filterPresensiDate" class="filter-select">
+                            </div>
+                            <div class="flex-1">
+                                <select id="filterPresensiDepartment" class="filter-select">
+                                    <option value="all">Semua Departemen</option>
+                                    <option value="Administrasi">Administrasi</option>
+                                    <option value="IT">IT</option>
+                                    <option value="HRD">HRD</option>
+                                    <option value="Marketing">Marketing</option>
+                                    <option value="Finance">Finance</option>
+                                </select>
+                            </div>
+                            <div class="flex-1">
+                                <input type="text" id="searchPresensi" placeholder="🔍 Cari nama karyawan..." class="search-input">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="p-6 border-b border-gray-800">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                            <div class="text-center p-4 bg-gray-800/50 rounded-lg">
+                                <div class="text-3xl font-bold text-emerald-400" id="countHadir">0</div>
+                                <div class="text-sm text-gray-400">Sudah Hadir</div>
+                            </div>
+                            <div class="text-center p-4 bg-gray-800/50 rounded-lg">
+                                <div class="text-3xl font-bold text-amber-400" id="countIzin">0</div>
+                                <div class="text-sm text-gray-400">Izin</div>
+                            </div>
+                            <div class="text-center p-4 bg-gray-800/50 rounded-lg">
+                                <div class="text-3xl font-bold text-red-400" id="countAlpa">0</div>
+                                <div class="text-sm text-gray-400">Belum Input</div>
+                            </div>
+                            <div class="text-center p-4 bg-gray-800/50 rounded-lg">
+                                <div class="text-3xl font-bold text-blue-400" id="countTotal">0</div>
+                                <div class="text-sm text-gray-400">Total Karyawan</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Presensi Table -->
+                    <div class="overflow-x-auto">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th class="pl-6">Karyawan</th>
+                                    <th>ID</th>
+                                    <th>Departemen</th>
+                                    <th>Posisi</th>
+                                    <th>Waktu Input</th>
+                                    <th>Status</th>
+                                    <th class="pr-6">Input Presensi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="presensiTableBody">
+                                <!-- Data akan diisi JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination -->
+                    <div class="pagination-container">
+                        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                            <div class="text-sm text-gray-400">
+                                Menampilkan <span id="presensiCount" class="font-semibold text-white">0</span> data presensi
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button id="prevPresensiBtn" class="pagination-btn" disabled>
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <span class="px-4 py-2 text-sm text-gray-400">Halaman <span id="currentPresensiPage" class="font-semibold text-white">1</span> dari <span id="totalPresensiPages" class="font-semibold text-white">1</span></span>
+                                <button id="nextPresensiBtn" class="pagination-btn" disabled>
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tugas -->
+            <div class="tab-pane hidden" id="tugasTab">
+                <div class="card">
+                    <div class="p-6 border-b border-gray-800">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-white">Daftar Tugas</h3>
+                                <p class="text-gray-400 text-sm mt-1">Kelola tugas yang diberikan kepada Anda</p>
+                            </div>
+                            <button class="px-4 py-2 bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-lg hover:opacity-90">
+                                <i class="fas fa-plus mr-2"></i>Tugas Baru
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Tugas</th>
+                                    <th>Status</th>
+                                    <th>Prioritas</th>
+                                    <th>Deadline</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="taskTable">
+                                <!-- Data akan diisi oleh JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cuti -->
+            <div class="tab-pane hidden" id="gaji-cutiTab">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    
+                    <!-- Informasi Cuti -->
+                    <div class="card p-6">
+                        <h3 class="text-xl font-bold text-white mb-6">Informasi Cuti</h3>
+                        <div class="space-y-4">
+                            <div class="flex justify-between items-center p-4 bg-gray-800/50 rounded-lg">
+                                <div>
+                                    <div class="text-gray-400 text-sm">Sisa Cuti Tahunan</div>
+                                    <div class="text-2xl font-bold">12 Hari</div>
+                                </div>
+                                <i class="fas fa-umbrella-beach text-2xl text-blue-400"></i>
+                            </div>
+                            
+                            <div class="space-y-3">
+                                <h4 class="font-semibold">Riwayat Pengajuan Cuti</h4>
+                                <div class="space-y-2">
+                                    <div class="flex justify-between items-center p-3 bg-gray-800/30 rounded-lg">
+                                        <div>
+                                            <div class="font-semibold">Cuti Tahunan</div>
+                                            <div class="text-sm text-gray-400">15-17 Jan 2025</div>
+                                        </div>
+                                        <span class="status-badge status-hadir">Disetujui</span>
+                                    </div>
+                                    <div class="flex justify-between items-center p-3 bg-gray-800/30 rounded-lg">
+                                        <div>
+                                            <div class="font-semibold">Cuti Sakit</div>
+                                            <div class="text-sm text-gray-400">5 Feb 2025</div>
+                                        </div>
+                                        <span class="status-badge status-hadir">Disetujui</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <button class="w-full py-3 bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-lg font-semibold hover:opacity-90 transition-all">
+                                <i class="fas fa-plus mr-2"></i>Ajukan Cuti Baru
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Input Presensi -->
+    <div class="modal hidden" id="presensiModal">
+        <div class="modal-content attendance-modal-content">
+            <div class="modal-header">
+                <h3 class="text-xl font-bold text-white" id="modalTitle">Input Presensi</h3>
+                <p class="text-blue-100" id="modalSubtitle">Pilih status kehadiran karyawan</p>
+            </div>
+            <div class="modal-body">
+                <div class="attendance-detail">
+                    <div class="attendance-detail-row">
+                        <span class="attendance-detail-label">Nama Karyawan:</span>
+                        <span class="attendance-detail-value" id="modalEmployeeName">-</span>
+                    </div>
+                    <div class="attendance-detail-row">
+                        <span class="attendance-detail-label">ID Karyawan:</span>
+                        <span class="attendance-detail-value" id="modalEmployeeId">-</span>
+                    </div>
+                    <div class="attendance-detail-row">
+                        <span class="attendance-detail-label">Departemen:</span>
+                        <span class="attendance-detail-value" id="modalDepartment">-</span>
+                    </div>
+                    <div class="attendance-detail-row">
+                        <span class="attendance-detail-label">Posisi:</span>
+                        <span class="attendance-detail-value" id="modalPosition">-</span>
+                    </div>
+                    <div class="attendance-detail-row">
+                        <span class="attendance-detail-label">Tanggal:</span>
+                        <span class="attendance-detail-value" id="modalDate">-</span>
+                    </div>
+                    <div class="attendance-detail-row">
+                        <span class="attendance-detail-label">Waktu:</span>
+                        <span class="attendance-detail-value" id="modalTime">-</span>
+                    </div>
+                </div>
+
+                <div class="attendance-options">
+                    <button class="attendance-option-btn btn-hadir" data-status="hadir">
+                        <i class="fas fa-check-circle mr-2"></i>Hadir
+                    </button>
+                    <button class="attendance-option-btn btn-izin" data-status="izin">
+                        <i class="fas fa-user-clock mr-2"></i>Izin
+                    </button>
+                    <button class="attendance-option-btn btn-alpa" data-status="alpa">
+                        <i class="fas fa-times-circle mr-2"></i>Tidak Hadir (Alpa)
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="flex gap-3">
+                    <button id="cancelPresensiModal" class="btn btn-secondary flex-1">
+                        <i class="fas fa-times mr-2"></i>Batal
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Modal -->
+    <div class="modal hidden" id="logoutModal">
+        <div class="modal-content max-w-md">
+            <div class="modal-header">
+                <h3 class="text-xl font-bold text-white">Konfirmasi Logout</h3>
+                <p class="text-blue-100">Apakah Anda yakin ingin keluar dari sistem?</p>
+            </div>
+            <div class="modal-body py-6">
+                <div class="flex flex-col items-center mb-6">
+                    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center mb-4">
+                        <i class="fas fa-sign-out-alt text-3xl text-white"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-white mb-2">Logout dari PresensiNex</h4>
+                    <p class="text-gray-400 text-center">Anda akan keluar dari dashboard karyawan</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="flex gap-3">
+                    <button id="cancelLogout" class="btn btn-secondary flex-1">
+                        <i class="fas fa-times mr-2"></i>Batal
+                    </button>
+                    <button id="confirmLogout" class="btn btn-danger flex-1">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  <!-- Footer -->
+<footer class="mt-12 py-8">
+    <div class="container mx-auto px-4 text-center">
+        <div class="mb-6">
+            <div class="inline-flex w-16 h-16 rounded-full overflow-hidden border-4 border-white/20 shadow-lg">
+                <img src="logonex.png" alt="PresensiNex Logo" class="w-full h-full object-cover">
+            </div>
+        </div>
+        
+        <h3 class="text-lg font-bold mb-2 gradient-text">PresensiNex - LKP NexGen</h3>
+        <p class="text-gray-500 text-sm mb-6">Sistem Presensi Digital Peserta</p>
+        
+        <div class="flex justify-center space-x-6 mb-6">
+            <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">
+                <i class="fab fa-whatsapp text-lg"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">
+                <i class="fab fa-instagram text-lg"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">
+                <i class="fab fa-facebook text-lg"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">
+                <i class="fas fa-envelope text-lg"></i>
+            </a>
+        </div>
+        
+        <p class="text-gray-600 text-sm">
+            &copy;v2.1.0 © 2026 LKP NexGen.
+        </p>
+    </div>
+</footer>
+<script src="script.js"></script>
+</body>
+</html>

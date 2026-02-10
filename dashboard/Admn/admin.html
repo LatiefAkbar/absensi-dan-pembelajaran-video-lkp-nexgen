@@ -1,0 +1,1176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PresensiNex - Dashboard Admin</title>
+    <link rel="icon" type="image/png" href="logonex.png">
+    <link rel="shortcut icon" href="logonex.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo">
+            <div class="relative w-28 h-28">
+                <div class="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 via-teal-500 to-blue-500 p-1 animate-spin-slow">
+                    <div class="w-full h-full rounded-full bg-gray-900"></div>
+                </div>
+                <div class="absolute inset-2 rounded-full overflow-hidden border-4 border-white/30">
+                    <img src="logonex.png" alt="PresensiNex Logo" class="w-full h-full object-cover">
+                </div>
+                <div class="absolute -inset-2 rounded-full bg-gradient-to-r from-blue-500/20 to-teal-500/20 blur-xl animate-pulse"></div>
+            </div>
+        </div>
+        <div class="spinner"></div>
+        <div class="loading-text">Menyiapkan Dashboard Anda...</div>
+    </div>
+
+ <!-- Navigation Header -->
+<nav class="nav-header shadow-2xl py-4 px-6 sticky top-0 z-40">
+    <div class="container mx-auto flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white/20">
+                <img src="logonex.png" alt="PresensiNex" class="w-full h-full object-cover">
+            </div>
+            <div>
+                <h1 class="text-xl font-bold text-white">PresensiNex</h1> 
+                <p class="text-gray-300 text-sm">Dashboard Administrator</p> 
+            </div>
+        </div>
+        
+        
+       <div class="user-profile" id="userProfile">
+            <div class="user-avatar" id="userAvatar">A</div>
+            <div class="user-info">
+                <div class="user-name" id="userName">Ahmad Fauzi</div>
+                <div class="user-role" id="userRole">Administrator</div>
+            </div>
+                <a href="#" class="dropdown-item logout" id="logoutDropdownBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <!-- Dashboard Header -->
+        <div class="dashboard-header p-8 mb-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+                <div>
+                    <h2 class="text-3xl font-bold text-white mb-2">Dashboard <span class="gradient-text">Administrator</span></h2>
+                    <p class="text-gray-400">Kelola semua sistem, data peserta, karyawan, dan konfigurasi</p>
+                </div>
+                <div class="mt-4 md:mt-0">
+                    <div class="text-sm text-gray-400">Super Admin ID:</div>
+                    <div class="font-mono font-semibold text-blue-300">ADM-001</div>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
+                <div class="stat-card px-4 py-3">
+                    <div class="text-sm text-gray-400">Total Peserta</div>
+                    <div class="text-2xl font-bold text-white" id="totalPeserta">120</div>
+                </div>
+                <div class="stat-card px-4 py-3">
+                    <div class="text-sm text-gray-400">Total Karyawan</div>
+                    <div class="text-2xl font-bold text-white" id="totalKaryawan">25</div>
+                </div>
+                <div class="stat-card px-4 py-3">
+                    <div class="text-sm text-gray-400">Total Kursus</div>
+                    <div class="text-2xl font-bold text-emerald-400" id="totalKursus">8</div>
+                </div>
+                <div class="stat-card px-4 py-3">
+                    <div class="text-sm text-gray-400">Aktivitas Hari Ini</div>
+                    <div class="text-2xl font-bold text-amber-400" id="totalAktivitas">47</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-nav">
+            <button class="tab-btn active" data-tab="dashboard">
+                <i class="fas fa-tachometer-alt mr-2"></i>Dashboard
+            </button>
+            <button class="tab-btn" data-tab="manage-peserta">
+                <i class="fas fa-users mr-2"></i>Kelola Peserta
+            </button>
+            <button class="tab-btn" data-tab="manage-karyawan">
+                <i class="fas fa-user-tie mr-2"></i>Kelola Karyawan
+            </button>
+            <button class="tab-btn" data-tab="manage-kursus">
+                <i class="fas fa-graduation-cap mr-2"></i>Kelola Kursus
+            </button>
+            <!-- TAB BARU: Upload Materi -->
+            <button class="tab-btn" data-tab="upload-materi">
+                <i class="fas fa-upload mr-2"></i>Upload Materi
+            </button>
+            <!-- TAB BARU: Akses Dashboard -->
+            <button class="tab-btn" data-tab="akses-dashboard">
+                <i class="fas fa-external-link-alt mr-2"></i>Akses Dashboard
+            </button>
+            <button class="tab-btn" data-tab="system">
+                <i class="fas fa-cogs mr-2"></i>Sistem
+            </button>
+        </div>
+
+        <!-- Tab Content -->
+        <div id="tabContent">
+            <!-- Dashboard Utama -->
+            <div class="tab-pane active" id="dashboardTab">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- Ringkasan Sistem -->
+                    <div class="lg:col-span-2">
+                        <div class="card p-6">
+                            <h3 class="text-xl font-bold text-white mb-6">Ringkasan Sistem</h3>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                <div class="text-center p-4 bg-gray-800/50 rounded-lg">
+                                    <div class="text-2xl font-bold text-emerald-400">92%</div>
+                                    <div class="text-sm text-gray-400">Kehadiran Peserta</div>
+                                </div>
+                                <div class="text-center p-4 bg-gray-800/50 rounded-lg">
+                                    <div class="text-2xl font-bold text-blue-400">95%</div>
+                                    <div class="text-sm text-gray-400">Kehadiran Karyawan</div>
+                                </div>
+                                <div class="text-center p-4 bg-gray-800/50 rounded-lg">
+                                    <div class="text-2xl font-bold text-amber-400">8</div>
+                                    <div class="text-sm text-gray-400">Kursus Aktif</div>
+                                </div>
+                                <div class="text-center p-4 bg-gray-800/50 rounded-lg">
+                                    <div class="text-2xl font-bold text-purple-400">12</div>
+                                    <div class="text-sm text-gray-400">Coach Aktif</div>
+                                </div>
+                                <div class="text-center p-4 bg-gray-800/50 rounded-lg">
+                                    <div class="text-2xl font-bold text-red-400">3</div>
+                                    <div class="text-sm text-gray-400">Tugas Tertunda</div>
+                                </div>
+                                <div class="text-center p-4 bg-gray-800/50 rounded-lg">
+                                    <div class="text-2xl font-bold text-teal-400">100%</div>
+                                    <div class="text-sm text-gray-400">Server Uptime</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions -->
+                    <div>
+                        <div class="card p-6">
+                            <h3 class="text-xl font-bold text-white mb-6">Aksi Cepat</h3>
+                            <div class="space-y-3">
+                                <button class="w-full text-left p-3 bg-gray-800/50 hover:bg-gray-800 rounded-lg transition-all flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-blue-500/20 flex items-center justify-center">
+                                        <i class="fas fa-user-plus text-blue-400"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-white">Tambah Peserta</div>
+                                        <div class="text-xs text-gray-400">Daftarkan peserta baru</div>
+                                    </div>
+                                </button>
+                                <button class="w-full text-left p-3 bg-gray-800/50 hover:bg-gray-800 rounded-lg transition-all flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-emerald-500/20 flex items-center justify-center">
+                                        <i class="fas fa-user-tie text-emerald-400"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-white">Tambah Karyawan</div>
+                                        <div class="text-xs text-gray-400">Daftarkan karyawan baru</div>
+                                    </div>
+                                </button>
+                                <button class="w-full text-left p-3 bg-gray-800/50 hover:bg-gray-800 rounded-lg transition-all flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-amber-500/20 flex items-center justify-center">
+                                        <i class="fas fa-graduation-cap text-amber-400"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-white">Buat Kursus Baru</div>
+                                        <div class="text-xs text-gray-400">Tambahkan kursus baru</div>
+                                    </div>
+                                </button>
+                                <button class="w-full text-left p-3 bg-gray-800/50 hover:bg-gray-800 rounded-lg transition-all flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-lg bg-red-500/20 flex items-center justify-center">
+                                        <i class="fas fa-chart-bar text-red-400"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-white">Generate Laporan</div>
+                                        <div class="text-xs text-gray-400">Buat laporan bulanan</div>
+                                    </div>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aktivitas Terbaru -->
+                <div class="card mb-8">
+                    <div class="p-6 border-b border-gray-800">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-white">Aktivitas Terbaru</h3>
+                                <p class="text-gray-400 text-sm mt-1">Log aktivitas sistem terbaru</p>
+                            </div>
+                            <button class="px-4 py-2 bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-lg hover:opacity-90">
+                                <i class="fas fa-sync-alt mr-2"></i>Refresh
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-6">
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-4 bg-gray-800/30 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                                        <i class="fas fa-user-plus text-emerald-400"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-white">Peserta Baru Terdaftar</div>
+                                        <div class="text-sm text-gray-400">Budi Santoso mendaftar kursus Digital Marketing</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm text-gray-400">10 menit yang lalu</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-gray-800/30 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-blue-500/20 flex items-center justify-center">
+                                        <i class="fas fa-calendar-check text-blue-400"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-white">Presensi Diinput</div>
+                                        <div class="text-sm text-gray-400">Ekal Arga Fraizy menginput presensi Komputer Dasar</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm text-gray-400">30 menit yang lalu</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between p-4 bg-gray-800/30 rounded-lg">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-full bg-amber-500/20 flex items-center justify-center">
+                                        <i class="fas fa-tasks text-amber-400"></i>
+                                    </div>
+                                    <div>
+                                        <div class="font-semibold text-white">Tugas Dikumpulkan</div>
+                                        <div class="text-sm text-gray-400">Ahmad Fauzi mengumpulkan tugas Content Creator</div>
+                                    </div>
+                                </div>
+                                <div class="text-right">
+                                    <div class="text-sm text-gray-400">1 jam yang lalu</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kelola Peserta -->
+            <div class="tab-pane hidden" id="manage-pesertaTab">
+                <div class="card mb-8">
+                    <div class="p-6 border-b border-gray-800">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-white">Kelola Data Peserta</h3>
+                                <p class="text-gray-400 text-sm mt-1">Kelola semua data peserta kursus</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="btn btn-primary" onclick="tambahPeserta()">
+                                    <i class="fas fa-plus mr-2"></i>Tambah Peserta
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-download mr-2"></i>Export
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Filter -->
+                    <div class="p-6 border-b border-gray-800">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <input type="text" id="searchPeserta" placeholder="🔍 Cari nama peserta..." class="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white">
+                            <select id="filterKursusPeserta" class="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white">
+                                <option value="">Semua Kursus</option>
+                                <option value="Komputer Dasar">Komputer Dasar</option>
+                                <option value="Content Creator">Content Creator</option>
+                                <option value="Desain Grafis">Desain Grafis</option>
+                                <option value="Digital Marketing">Digital Marketing</option>
+                            </select>
+                            <select id="filterStatusPeserta" class="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white">
+                                <option value="">Semua Status</option>
+                                <option value="Aktif">Aktif</option>
+                                <option value="Lulus">Lulus</option>
+                                <option value="Nonaktif">Nonaktif</option>
+                            </select>
+                            <button class="px-4 py-2 bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-lg hover:opacity-90">
+                                <i class="fas fa-filter mr-2"></i>Filter
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tabel Peserta -->
+                    <div class="overflow-x-auto">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID Peserta</th>
+                                    <th>Nama</th>
+                                    <th>Email</th>
+                                    <th>Kursus</th>
+                                    <th>Status</th>
+                                    <th>Tanggal Daftar</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pesertaTableBody">
+                                <!-- Data akan diisi JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="p-4 bg-gray-900/50 border-t border-gray-800">
+                        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                            <div class="text-sm text-gray-400">
+                                Menampilkan <span id="pesertaCount">0</span> peserta
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="px-4 py-2 text-sm bg-gray-800 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50" id="prevPesertaBtn" disabled>
+                                    <i class="fas fa-chevron-left mr-1"></i> Sebelumnya
+                                </button>
+                                <span class="px-3 py-2 text-sm text-gray-400">Halaman <span id="currentPesertaPage">1</span> dari <span id="totalPesertaPages">1</span></span>
+                                <button class="px-4 py-2 text-sm bg-gray-800 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50" id="nextPesertaBtn" disabled>
+                                    Selanjutnya <i class="fas fa-chevron-right ml-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kelola Karyawan -->
+            <div class="tab-pane hidden" id="manage-karyawanTab">
+                <div class="card mb-8">
+                    <div class="p-6 border-b border-gray-800">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                            <div>
+                                <h3 class="text-xl font-bold text-white">Kelola Data Karyawan</h3>
+                                <p class="text-gray-400 text-sm mt-1">Kelola semua data karyawan dan coach</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <button class="btn btn-primary" onclick="tambahKaryawan()">
+                                    <i class="fas fa-plus mr-2"></i>Tambah Karyawan
+                                </button>
+                                <button class="btn btn-secondary">
+                                    <i class="fas fa-file-export mr-2"></i>Export
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Filter -->
+                    <div class="p-6 border-b border-gray-800">
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                            <input type="text" id="searchKaryawan" placeholder="🔍 Cari nama karyawan..." class="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white">
+                            <select id="filterDepartment" class="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white">
+                                <option value="">Semua Departemen</option>
+                                <option value="Administrasi">Administrasi</option>
+                                <option value="IT">IT</option>
+                                <option value="HRD">HRD</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Finance">Finance</option>
+                                <option value="Coach">Coach</option>
+                            </select>
+                            <select id="filterStatusKaryawan" class="px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white">
+                                <option value="">Semua Status</option>
+                                <option value="Aktif">Aktif</option>
+                                <option value="Nonaktif">Nonaktif</option>
+                                <option value="Cuti">Cuti</option>
+                            </select>
+                            <button class="px-4 py-2 bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-lg hover:opacity-90">
+                                <i class="fas fa-filter mr-2"></i>Filter
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tabel Karyawan -->
+                    <div class="overflow-x-auto">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID Karyawan</th>
+                                    <th>Nama</th>
+                                    <th>Email</th>
+                                    <th>Departemen</th>
+                                    <th>Posisi</th>
+                                    <th>Status</th>
+                                    <th>Tanggal Bergabung</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="karyawanTableBody">
+                                <!-- Data akan diisi JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="p-4 bg-gray-900/50 border-t border-gray-800">
+                        <div class="flex flex-col md:flex-row justify-between items-center gap-4">
+                            <div class="text-sm text-gray-400">
+                                Menampilkan <span id="karyawanCount">0</span> karyawan
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="px-4 py-2 text-sm bg-gray-800 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50" id="prevKaryawanBtn" disabled>
+                                    <i class="fas fa-chevron-left mr-1"></i> Sebelumnya
+                                </button>
+                                <span class="px-3 py-2 text-sm text-gray-400">Halaman <span id="currentKaryawanPage">1</span> dari <span id="totalKaryawanPages">1</span></span>
+                                <button class="px-4 py-2 text-sm bg-gray-800 text-gray-300 rounded-lg hover:bg-gray-700 transition-colors disabled:opacity-50" id="nextKaryawanBtn" disabled>
+                                    Selanjutnya <i class="fas fa-chevron-right ml-1"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kelola Kursus -->
+            <div class="tab-pane hidden" id="manage-kursusTab">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- Daftar Kursus -->
+                    <div class="lg:col-span-2">
+                        <div class="card">
+                            <div class="p-6 border-b border-gray-800">
+                                <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                                    <div>
+                                        <h3 class="text-xl font-bold text-white">Daftar Kursus</h3>
+                                        <p class="text-gray-400 text-sm mt-1">Kelola semua kursus yang tersedia</p>
+                                    </div>
+                                    <button class="btn btn-primary" onclick="tambahKursus()">
+                                        <i class="fas fa-plus mr-2"></i>Tambah Kursus
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-6">
+                                <div class="space-y-4">
+                                    <!-- Kursus akan diisi JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statistik Kursus -->
+                    <div>
+                        <div class="card p-6">
+                            <h3 class="text-xl font-bold text-white mb-6">Statistik Kursus</h3>
+                            <div class="space-y-4">
+                                <div class="p-4 bg-gray-800/50 rounded-lg">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <div class="text-gray-400">Total Peserta</div>
+                                        <div class="text-2xl font-bold text-white">120</div>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 80%"></div>
+                                    </div>
+                                </div>
+                                <div class="p-4 bg-gray-800/50 rounded-lg">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <div class="text-gray-400">Kursus Terpopuler</div>
+                                        <div class="text-lg font-bold text-emerald-400">Digital Marketing</div>
+                                    </div>
+                                    <div class="text-sm text-gray-400">45 peserta aktif</div>
+                                </div>
+                                <div class="p-4 bg-gray-800/50 rounded-lg">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <div class="text-gray-400">Coach Aktif</div>
+                                        <div class="text-2xl font-bold text-blue-400">12</div>
+                                    </div>
+                                    <div class="text-sm text-gray-400">4 coach per kursus</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== TAB UPLOAD MATERI ==================== -->
+            <div class="tab-pane hidden" id="upload-materiTab">
+                <div class="card mb-8">
+                    <div class="p-6 border-b border-gray-800">
+                        <h3 class="text-xl font-bold text-white">Upload Materi Kursus</h3>
+                        <p class="text-gray-400 text-sm mt-1">Upload materi untuk semua kursus yang tersedia</p>
+                    </div>
+                    
+                    <!-- Form Upload Materi -->
+                    <div class="p-6">
+                        <form id="formUploadMateri" class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <!-- Pilih Kursus -->
+                                <div>
+                                    <label class="block text-gray-300 text-sm mb-2">Pilih Kursus</label>
+                                    <select id="selectKursusMateri" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                                        <option value="">Pilih Kursus</option>
+                                        <option value="Komputer Dasar">Komputer Dasar</option>
+                                        <option value="Content Creator">Content Creator</option>
+                                        <option value="Desain Grafis">Desain Grafis</option>
+                                        <option value="Digital Marketing">Digital Marketing</option>
+                                    </select>
+                                </div>
+                                
+                                <!-- Pilih Materi -->
+                                <div>
+                                    <label class="block text-gray-300 text-sm mb-2">Jenis Materi</label>
+                                    <select id="selectJenisMateri" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                                        <option value="">Pilih Jenis Materi</option>
+                                        <optgroup label="Komputer Dasar">
+                                            <option value="Microsoft Word">Microsoft Word</option>
+                                            <option value="Microsoft Excel">Microsoft Excel</option>
+                                            <option value="Microsoft PowerPoint">Microsoft PowerPoint</option>
+                                            <option value="Microsoft Office">Microsoft Office</option>
+                                        </optgroup>
+                                        <optgroup label="Content Creator">
+                                            <option value="Fondasi & Strategi Konten">Fondasi & Strategi Konten</option>
+                                            <option value="Produksi Konten Video">Produksi Konten Video</option>
+                                            <option value="Distribusi & Pertumbuhan">Distribusi & Pertumbuhan</option>
+                                            <option value="Monetisasi & Etika">Monetisasi & Etika</option>
+                                        </optgroup>
+                                        <optgroup label="Desain Grafis">
+                                            <option value="Canva">Canva</option>
+                                            <option value="Adobe Photoshop">Adobe Photoshop</option>
+                                            <option value="Adobe Premiere Pro">Adobe Premiere Pro</option>
+                                            <option value="Adobe After Effects">Adobe After Effects</option>
+                                        </optgroup>
+                                        <optgroup label="Digital Marketing">
+                                            <option value="Riset Data Bisnis Digital">Riset Data Bisnis Digital</option>
+                                            <option value="Social Media Marketing">Social Media Marketing</option>
+                                            <option value="Content Marketing">Content Marketing</option>
+                                            <option value="Analytics & Reporting">Analytics & Reporting</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Informasi Materi -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div>
+                                    <label class="block text-gray-300 text-sm mb-2">Judul Materi</label>
+                                    <input type="text" id="judulMateri" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white" 
+                                           placeholder="Contoh: Tutorial Microsoft Word Dasar" required>
+                                </div>
+                                
+                                <div>
+                                    <label class="block text-gray-300 text-sm mb-2">Sesi Pertemuan</label>
+                                    <select id="sesiMateri" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                                        <option value="">Pilih Sesi</option>
+                                        <option value="1">Pertemuan 1</option>
+                                        <option value="2">Pertemuan 2</option>
+                                        <option value="3">Pertemuan 3</option>
+                                        <option value="4">Pertemuan 4</option>
+                                        <option value="5">Pertemuan 5</option>
+                                        <option value="6">UTS</option>
+                                        <option value="7">Pertemuan 7</option>
+                                        <option value="8">Pertemuan 8</option>
+                                        <option value="9">Pertemuan 9</option>
+                                        <option value="10">Pertemuan 10</option>
+                                        <option value="11">Pertemuan 11</option>
+                                        <option value="12">UAS</option>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <!-- Deskripsi -->
+                            <div>
+                                <label class="block text-gray-300 text-sm mb-2">Deskripsi Materi</label>
+                                <textarea id="deskripsiMateri" class="w-full px-4 py-3 bg-gray-800 border border-gray-700 rounded-lg text-white" 
+                                          rows="3" placeholder="Deskripsi lengkap tentang materi ini..."></textarea>
+                            </div>
+                            
+                            <!-- Upload File -->
+                            <div>
+                                <label class="block text-gray-300 text-sm mb-2">Upload File Materi</label>
+                                <div class="border-2 border-dashed border-gray-700 rounded-xl p-8 text-center hover:border-blue-500 transition-colors cursor-pointer" 
+                                     id="dropZone" onclick="document.getElementById('fileMateri').click()">
+                                    <input type="file" id="fileMateri" class="hidden" accept=".pdf,.doc,.docx,.ppt,.pptx,.zip,.mp4,.avi,.jpg,.png">
+                                    <i class="fas fa-cloud-upload-alt text-4xl text-gray-500 mb-4"></i>
+                                    <h4 class="text-lg font-semibold text-white mb-2">Drag & Drop atau Klik untuk Upload</h4>
+                                    <p class="text-gray-400 text-sm mb-4">Format yang didukung: PDF, DOC, PPT, ZIP, MP4, JPG, PNG</p>
+                                    <p class="text-gray-500 text-xs">Maksimal ukuran file: 50MB</p>
+                                </div>
+                                <div class="mt-2 text-sm text-gray-400" id="fileInfo"></div>
+                            </div>
+                            
+                            <!-- Tipe File -->
+                            <div>
+                                <label class="block text-gray-300 text-sm mb-2">Tipe File</label>
+                                <div class="flex flex-wrap gap-3">
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="tipeFile" value="pdf" class="text-blue-500" checked>
+                                        <span class="ml-2 text-gray-300">PDF Document</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="tipeFile" value="video" class="text-blue-500">
+                                        <span class="ml-2 text-gray-300">Video Tutorial</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="tipeFile" value="zip" class="text-blue-500">
+                                        <span class="ml-2 text-gray-300">ZIP Archive</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="tipeFile" value="image" class="text-blue-500">
+                                        <span class="ml-2 text-gray-300">Image/Graphic</span>
+                                    </label>
+                                    <label class="inline-flex items-center">
+                                        <input type="radio" name="tipeFile" value="presentation" class="text-blue-500">
+                                        <span class="ml-2 text-gray-300">Presentation</span>
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Tombol Submit -->
+                            <div class="flex gap-3 pt-4">
+                                <button type="button" onclick="resetFormMateri()" class="btn btn-secondary flex-1">
+                                    <i class="fas fa-redo mr-2"></i>Reset Form
+                                </button>
+                                <button type="submit" class="btn btn-primary flex-1">
+                                    <i class="fas fa-upload mr-2"></i>Upload Materi
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    
+                    <!-- Daftar Materi yang sudah diupload -->
+                    <div class="p-6 border-t border-gray-800">
+                        <h4 class="text-lg font-bold text-white mb-4">Materi Terupload</h4>
+                        <div class="overflow-x-auto">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Kursus</th>
+                                        <th>Materi</th>
+                                        <th>File</th>
+                                        <th>Tanggal Upload</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="materiTableBody">
+                                    <!-- Data materi akan diisi JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ==================== TAB AKSES DASHBOARD ==================== -->
+            <div class="tab-pane hidden" id="akses-dashboardTab">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <!-- Akses Dashboard Peserta -->
+                    <div class="card p-6">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-blue-500 to-teal-500 flex items-center justify-center">
+                                <i class="fas fa-users text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white">Dashboard Peserta</h3>
+                                <p class="text-gray-400 text-sm">Akses dan kelola dashboard peserta</p>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4 mb-6">
+                            <div class="p-4 bg-gray-800/50 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <div class="text-gray-400 text-sm">Total Peserta Aktif</div>
+                                        <div class="text-2xl font-bold text-white">120</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-sm text-gray-400">Kursus Aktif</div>
+                                        <div class="text-lg font-bold text-emerald-400">4</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-3">
+                                <button onclick="aksesDashboardPeserta('semua')" class="p-3 bg-gray-800/50 hover:bg-gray-800 rounded-lg transition-all">
+                                    <i class="fas fa-eye text-blue-400 mb-2"></i>
+                                    <div class="font-semibold text-white">Lihat Semua Peserta</div>
+                                </button>
+                                <button onclick="aksesDashboardPeserta('presensi')" class="p-3 bg-gray-800/50 hover:bg-gray-800 rounded-lg transition-all">
+                                    <i class="fas fa-calendar-check text-emerald-400 mb-2"></i>
+                                    <div class="font-semibold text-white">Lihat Presensi</div>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Pilih Peserta untuk Login -->
+                        <div>
+                            <label class="block text-gray-300 text-sm mb-3">Login sebagai Peserta:</label>
+                            <div class="flex gap-3">
+                                <select id="selectPeserta" class="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white">
+                                    <option value="">Pilih Peserta</option>
+                                    <!-- Opsi peserta akan diisi JavaScript -->
+                                </select>
+                                <button onclick="loginSebagaiPeserta()" class="px-4 py-2 bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-lg hover:opacity-90">
+                                    <i class="fas fa-sign-in-alt mr-2"></i>Login
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Link langsung ke dashboard peserta -->
+                        <div class="mt-6 pt-6 border-t border-gray-800">
+                            <a href="indexpeserta.html" target="_blank" class="block w-full p-3 bg-gradient-to-r from-blue-500/20 to-teal-500/20 border border-blue-500/30 rounded-lg hover:bg-blue-500/30 transition-all text-center">
+                                <i class="fas fa-external-link-alt mr-2"></i>
+                                <span class="font-semibold">Buka Dashboard Peserta (New Tab)</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Akses Dashboard Karyawan -->
+                    <div class="card p-6">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-12 h-12 rounded-xl bg-gradient-to-r from-emerald-500 to-green-500 flex items-center justify-center">
+                                <i class="fas fa-user-tie text-white text-xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white">Dashboard Karyawan</h3>
+                                <p class="text-gray-400 text-sm">Akses dan kelola dashboard karyawan</p>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4 mb-6">
+                            <div class="p-4 bg-gray-800/50 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <div class="text-gray-400 text-sm">Total Karyawan Aktif</div>
+                                        <div class="text-2xl font-bold text-white">25</div>
+                                    </div>
+                                    <div class="text-right">
+                                        <div class="text-sm text-gray-400">Departemen</div>
+                                        <div class="text-lg font-bold text-amber-400">6</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-3">
+                                <button onclick="aksesDashboardKaryawan('semua')" class="p-3 bg-gray-800/50 hover:bg-gray-800 rounded-lg transition-all">
+                                    <i class="fas fa-eye text-blue-400 mb-2"></i>
+                                    <div class="font-semibold text-white">Lihat Semua Karyawan</div>
+                                </button>
+                                <button onclick="aksesDashboardKaryawan('presensi')" class="p-3 bg-gray-800/50 hover:bg-gray-800 rounded-lg transition-all">
+                                    <i class="fas fa-calendar-alt text-emerald-400 mb-2"></i>
+                                    <div class="font-semibold text-white">Input Presensi</div>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Pilih Karyawan untuk Login -->
+                        <div>
+                            <label class="block text-gray-300 text-sm mb-3">Login sebagai Karyawan:</label>
+                            <div class="flex gap-3">
+                                <select id="selectKaryawan" class="flex-1 px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white">
+                                    <option value="">Pilih Karyawan</option>
+                                    <!-- Opsi karyawan akan diisi JavaScript -->
+                                </select>
+                                <button onclick="loginSebagaiKaryawan()" class="px-4 py-2 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-lg hover:opacity-90">
+                                    <i class="fas fa-sign-in-alt mr-2"></i>Login
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Link langsung ke dashboard karyawan -->
+                        <div class="mt-6 pt-6 border-t border-gray-800">
+                            <a href="index.html" target="_blank" class="block w-full p-3 bg-gradient-to-r from-emerald-500/20 to-green-500/20 border border-emerald-500/30 rounded-lg hover:bg-emerald-500/30 transition-all text-center">
+                                <i class="fas fa-external-link-alt mr-2"></i>
+                                <span class="font-semibold">Buka Dashboard Karyawan (New Tab)</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Statistik Akses -->
+                <div class="card p-6">
+                    <h3 class="text-xl font-bold text-white mb-6">Statistik Akses</h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="text-center p-4 bg-gray-800/50 rounded-lg">
+                            <div class="text-2xl font-bold text-blue-400">47</div>
+                            <div class="text-sm text-gray-400">Login Hari Ini</div>
+                        </div>
+                        <div class="text-center p-4 bg-gray-800/50 rounded-lg">
+                            <div class="text-2xl font-bold text-emerald-400">12</div>
+                            <div class="text-sm text-gray-400">Admin Aktif</div>
+                        </div>
+                        <div class="text-center p-4 bg-gray-800/50 rounded-lg">
+                            <div class="text-2xl font-bold text-amber-400">8</div>
+                            <div class="text-sm text-gray-400">Materi Diupload</div>
+                        </div>
+                        <div class="text-center p-4 bg-gray-800/50 rounded-lg">
+                            <div class="text-2xl font-bold text-purple-400">156</div>
+                            <div class="text-sm text-gray-400">Total Akses</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sistem -->
+            <div class="tab-pane hidden" id="systemTab">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- Pengaturan Sistem -->
+                    <div class="lg:col-span-2">
+                        <div class="card">
+                            <div class="p-6 border-b border-gray-800">
+                                <h3 class="text-xl font-bold text-white">Pengaturan Sistem</h3>
+                                <p class="text-gray-400 text-sm mt-1">Konfigurasi sistem dan aplikasi</p>
+                            </div>
+                            <div class="p-6 space-y-6">
+                                <div>
+                                    <h4 class="text-lg font-bold text-white mb-4">Informasi Aplikasi</h4>
+                                    <div class="space-y-4">
+                                        <div class="flex justify-between items-center p-4 bg-gray-800/50 rounded-lg">
+                                            <div>
+                                                <div class="text-gray-400">Nama Aplikasi</div>
+                                                <div class="text-white font-semibold">PresensiNex v2.1.0</div>
+                                            </div>
+                                            <i class="fas fa-info-circle text-blue-400 text-xl"></i>
+                                        </div>
+                                        <div class="flex justify-between items-center p-4 bg-gray-800/50 rounded-lg">
+                                            <div>
+                                                <div class="text-gray-400">Versi Database</div>
+                                                <div class="text-white font-semibold">v2.0.0</div>
+                                            </div>
+                                            <i class="fas fa-database text-emerald-400 text-xl"></i>
+                                        </div>
+                                        <div class="flex justify-between items-center p-4 bg-gray-800/50 rounded-lg">
+                                            <div>
+                                                <div class="text-gray-400">Status Server</div>
+                                                <div class="text-white font-semibold text-emerald-400">Online</div>
+                                            </div>
+                                            <i class="fas fa-server text-amber-400 text-xl"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <h4 class="text-lg font-bold text-white mb-4">Keamanan Sistem</h4>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg">
+                                            <div class="flex items-center gap-3">
+                                                <i class="fas fa-shield-alt text-blue-400"></i>
+                                                <div>
+                                                    <div class="font-semibold text-white">Two-Factor Authentication</div>
+                                                    <div class="text-sm text-gray-400">Tambahkan lapisan keamanan ekstra</div>
+                                                </div>
+                                            </div>
+                                            <label class="switch">
+                                                <input type="checkbox" checked>
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+                                        <div class="flex items-center justify-between p-4 bg-gray-800/50 rounded-lg">
+                                            <div class="flex items-center gap-3">
+                                                <i class="fas fa-history text-amber-400"></i>
+                                                <div>
+                                                    <div class="font-semibold text-white">Log Aktivitas</div>
+                                                    <div class="text-sm text-gray-400">Catat semua aktivitas sistem</div>
+                                                </div>
+                                            </div>
+                                            <label class="switch">
+                                                <input type="checkbox" checked>
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Backup & Restore -->
+                    <div>
+                        <div class="card p-6">
+                            <h3 class="text-xl font-bold text-white mb-6">Backup & Restore</h3>
+                            <div class="space-y-4">
+                                <button class="w-full p-4 bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-lg hover:opacity-90 transition-all flex items-center justify-center gap-3">
+                                    <i class="fas fa-database text-xl"></i>
+                                    <div class="text-left">
+                                        <div class="font-bold">Backup Database</div>
+                                        <div class="text-sm opacity-90">Buat cadangan data</div>
+                                    </div>
+                                </button>
+                                <button class="w-full p-4 bg-gradient-to-r from-emerald-500 to-green-500 text-white rounded-lg hover:opacity-90 transition-all flex items-center justify-center gap-3">
+                                    <i class="fas fa-undo text-xl"></i>
+                                    <div class="text-left">
+                                        <div class="font-bold">Restore Database</div>
+                                        <div class="text-sm opacity-90">Pulihkan data dari backup</div>
+                                    </div>
+                                </button>
+                                <button class="w-full p-4 bg-gradient-to-r from-amber-500 to-yellow-500 text-white rounded-lg hover:opacity-90 transition-all flex items-center justify-center gap-3">
+                                    <i class="fas fa-file-export text-xl"></i>
+                                    <div class="text-left">
+                                        <div class="font-bold">Export Data</div>
+                                        <div class="text-sm opacity-90">Export data ke Excel/PDF</div>
+                                    </div>
+                                </button>
+                            </div>
+                            
+                            <div class="mt-6 pt-6 border-t border-gray-800">
+                                <h4 class="text-lg font-bold text-white mb-4">Statistik Database</h4>
+                                <div class="space-y-3">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-400">Ukuran Database</span>
+                                        <span class="font-semibold text-white">245 MB</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-400">Backup Terakhir</span>
+                                        <span class="font-semibold text-white">2 hari lalu</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-400">Total Backup</span>
+                                        <span class="font-semibold text-white">12</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8">
+        <div class="container mx-auto px-4 text-center">
+            <div class="mb-6">
+                <div class="inline-flex w-16 h-16 rounded-full overflow-hidden border-4 border-white/20 shadow-lg">
+                    <img src="logonex.png" alt="PresensiNex Logo" class="w-full h-full object-cover">
+                </div>
+            </div>
+            
+            <h3 class="text-lg font-bold mb-2 gradient-text">PresensiNex - LKP NexGen</h3>
+            <p class="text-gray-500 text-sm mb-6">Sistem Presensi Digital | Dashboard Administrator</p>
+            
+            <div class="flex justify-center space-x-6 mb-6">
+                <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">
+                    <i class="fab fa-whatsapp text-lg"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">
+                    <i class="fab fa-instagram text-lg"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">
+                    <i class="fab fa-facebook text-lg"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">
+                    <i class="fas fa-envelope text-lg"></i>
+                </a>
+            </div>
+            
+            <p class="text-gray-600 text-sm">
+                &copy;v2.1.0 © 2026 LKP NexGen. Hak Cipta Dilindungi.
+            </p>
+        </div>
+    </footer>
+
+    <!-- Modal Logout -->
+    <div class="modal hidden" id="logoutModal">
+        <div class="modal-content max-w-md">
+            <div class="modal-header">
+                <h3 class="text-xl font-bold text-white">Konfirmasi Logout</h3>
+                <p class="text-blue-100">Apakah Anda yakin ingin keluar dari sistem?</p>
+            </div>
+            <div class="modal-body py-6">
+                <div class="flex flex-col items-center mb-6">
+                    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center mb-4">
+                        <i class="fas fa-sign-out-alt text-3xl text-white"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-white mb-2">Logout dari PresensiNex</h4>
+                    <p class="text-gray-400 text-center">Anda akan keluar dari dashboard administrator</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="flex gap-3">
+                    <button id="cancelLogout" class="btn btn-secondary flex-1">
+                        <i class="fas fa-times mr-2"></i>Batal
+                    </button>
+                    <button id="confirmLogout" class="btn btn-danger flex-1">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Peserta -->
+    <div class="modal hidden" id="tambahPesertaModal">
+        <div class="modal-content max-w-lg">
+            <div class="modal-header">
+                <h3 class="text-xl font-bold text-white">Tambah Peserta Baru</h3>
+                <p class="text-blue-100">Daftarkan peserta baru ke sistem</p>
+            </div>
+            <div class="modal-body py-6">
+                <form id="formTambahPeserta" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-300 text-sm mb-2">Nama Lengkap</label>
+                            <input type="text" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 text-sm mb-2">Email</label>
+                            <input type="email" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-300 text-sm mb-2">Telepon</label>
+                            <input type="tel" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 text-sm mb-2">Kursus</label>
+                            <select class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                                <option value="">Pilih Kursus</option>
+                                <option value="Komputer Dasar">Komputer Dasar</option>
+                                <option value="Content Creator">Content Creator</option>
+                                <option value="Desain Grafis">Desain Grafis</option>
+                                <option value="Digital Marketing">Digital Marketing</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm mb-2">Alamat</label>
+                        <textarea class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="flex gap-3">
+                    <button type="button" class="btn btn-secondary flex-1" onclick="tutupModal('tambahPesertaModal')">
+                        <i class="fas fa-times mr-2"></i>Batal
+                    </button>
+                    <button type="submit" form="formTambahPeserta" class="btn btn-primary flex-1">
+                        <i class="fas fa-save mr-2"></i>Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Karyawan -->
+    <div class="modal hidden" id="tambahKaryawanModal">
+        <div class="modal-content max-w-lg">
+            <div class="modal-header">
+                <h3 class="text-xl font-bold text-white">Tambah Karyawan Baru</h3>
+                <p class="text-blue-100">Daftarkan karyawan baru ke sistem</p>
+            </div>
+            <div class="modal-body py-6">
+                <form id="formTambahKaryawan" class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-300 text-sm mb-2">Nama Lengkap</label>
+                            <input type="text" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 text-sm mb-2">Email</label>
+                            <input type="email" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-300 text-sm mb-2">Departemen</label>
+                            <select class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                                <option value="">Pilih Departemen</option>
+                                <option value="Administrasi">Administrasi</option>
+                                <option value="IT">IT</option>
+                                <option value="HRD">HRD</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Finance">Finance</option>
+                                <option value="Coach">Coach</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 text-sm mb-2">Posisi</label>
+                            <input type="text" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm mb-2">Tanggal Bergabung</label>
+                        <input type="date" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="flex gap-3">
+                    <button type="button" class="btn btn-secondary flex-1" onclick="tutupModal('tambahKaryawanModal')">
+                        <i class="fas fa-times mr-2"></i>Batal
+                    </button>
+                    <button type="submit" form="formTambahKaryawan" class="btn btn-primary flex-1">
+                        <i class="fas fa-save mr-2"></i>Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Kursus -->
+    <div class="modal hidden" id="tambahKursusModal">
+        <div class="modal-content max-w-lg">
+            <div class="modal-header">
+                <h3 class="text-xl font-bold text-white">Tambah Kursus Baru</h3>
+                <p class="text-blue-100">Buat kursus baru untuk peserta</p>
+            </div>
+            <div class="modal-body py-6">
+                <form id="formTambahKursus" class="space-y-4">
+                    <div>
+                        <label class="block text-gray-300 text-sm mb-2">Nama Kursus</label>
+                        <input type="text" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-300 text-sm mb-2">Coach</label>
+                            <select class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                                <option value="">Pilih Coach</option>
+                                <option value="Ekal Arga Fraizy">Ekal Arga Fraizy</option>
+                                <option value="Faizal Arya Putu Nirmansyah">Faizal Arya Putu Nirmansyah</option>
+                                <option value="Afdhal Fauzan">Afdhal Fauzan</option>
+                                <option value="Latif Akbar Maulana">Latif Akbar Maulana</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 text-sm mb-2">Level</label>
+                            <select class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                                <option value="Basic">Basic</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Advanced">Advanced</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-300 text-sm mb-2">Jumlah Sesi</label>
+                            <input type="number" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 text-sm mb-2">Kapasitas</label>
+                            <input type="number" class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm mb-2">Deskripsi</label>
+                        <textarea class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg text-white" rows="3"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="flex gap-3">
+                    <button type="button" class="btn btn-secondary flex-1" onclick="tutupModal('tambahKursusModal')">
+                        <i class="fas fa-times mr-2"></i>Batal
+                    </button>
+                    <button type="submit" form="formTambahKursus" class="btn btn-primary flex-1">
+                        <i class="fas fa-save mr-2"></i>Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
