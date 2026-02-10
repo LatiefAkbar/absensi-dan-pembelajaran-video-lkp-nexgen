@@ -14,7 +14,7 @@
     --shadow-gold: rgba(251, 191, 36, 0.3);
 }
 
-/* Reset dan Base Styles */
+
 * {
     margin: 0;
     padding: 0;
@@ -718,7 +718,7 @@ input::placeholder, textarea::placeholder {
     }
 }
 
-/* Print Styles */
+
 @media print {
     .no-print {
         display: none !important;
@@ -735,7 +735,6 @@ input::placeholder, textarea::placeholder {
     }
 }
 
-/* Tambahkan di style.css */
 .admin-login-badge {
     display: inline-block;
     padding: 2px 8px;

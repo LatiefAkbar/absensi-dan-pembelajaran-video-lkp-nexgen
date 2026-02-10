@@ -631,7 +631,7 @@ body {
     background: linear-gradient(135deg, var(--primary-gold-light), var(--primary-gold));
 }
 
-/* Utilities */
+
 .hidden {
     display: none !important;
 }

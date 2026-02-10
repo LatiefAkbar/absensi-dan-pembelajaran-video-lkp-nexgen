@@ -914,14 +914,13 @@ function showAlert(icon, title, text) {
     }, 3000);
 }
 
-// Setup event listeners
+
 function setupEventListeners() {
     const logoutDropdownBtn = document.getElementById('logoutDropdownBtn');
     if (logoutDropdownBtn) {
         logoutDropdownBtn.addEventListener('click', (e) => {
             e.preventDefault();
             
-            // Tampilkan konfirmasi logout
             if (confirm('Apakah Anda yakin ingin logout?')) {
                 showAlert('info', 'Logout Berhasil', 'Anda telah keluar dari sistem');
                 setTimeout(() => {

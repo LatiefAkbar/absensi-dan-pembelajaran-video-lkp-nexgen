@@ -258,10 +258,7 @@ const elements = {
     confirmLogout: document.getElementById('confirmLogout'),
     
     // Logout Button
-    logoutBtn: document.getElementById('logoutBtn'),
-    
-    // Theme Toggle
-    themeToggle: document.getElementById('themeToggle')
+    logoutBtn: document.getElementById('logoutBtn')
 };
 
 // ==================== UTILITY FUNCTIONS ====================
@@ -444,7 +441,7 @@ const render = {
         
         paginatedEmployees.forEach(employee => {
             const row = document.createElement('tr');
-            row.className = 'hover:bg-gray-800/30 transition-colors';
+            row.className = 'hover:bg-gray-100 transition-colors';
             row.innerHTML = `
                 <td class="pl-6 py-4">
                     <div class="flex items-center space-x-3">
@@ -453,12 +450,12 @@ const render = {
                         </div>
                         <div>
                             <div class="font-semibold">${employee.name}</div>
-                            <div class="text-sm text-gray-400">${employee.email}</div>
+                            <div class="text-sm text-gray-600">${employee.email}</div>
                         </div>
                     </div>
                 </td>
                 <td class="py-4">
-                    <span class="font-mono text-sm bg-gray-800/50 px-3 py-1 rounded">${employee.id}</span>
+                    <span class="font-mono text-sm bg-gray-100 px-3 py-1 rounded">${employee.id}</span>
                 </td>
                 <td class="py-4">
                     <span class="department-badge">${employee.department}</span>
@@ -491,7 +488,7 @@ const render = {
         
         for (let i = 1; i <= totalPages; i++) {
             const pageBtn = document.createElement('button');
-            pageBtn.className = `px-3 py-1 rounded-md text-sm ${i === state.employeePage ? 'bg-gradient-to-r from-blue-500 to-teal-500 text-white' : 'bg-gray-800 text-gray-400 hover:bg-gray-700'}`;
+            pageBtn.className = `px-3 py-1 rounded-md text-sm ${i === state.employeePage ? 'bg-gradient-to-r from-blue-500 to-teal-500 text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`;
             pageBtn.textContent = i;
             pageBtn.addEventListener('click', () => {
                 state.employeePage = i;
@@ -511,7 +508,7 @@ const render = {
         
         paginatedAttendance.forEach(attendance => {
             const row = document.createElement('tr');
-            row.className = 'hover:bg-gray-800/30 transition-colors';
+            row.className = 'hover:bg-gray-100 transition-colors';
             row.innerHTML = `
                 <td class="pl-6 py-4">
                     <div class="flex items-center space-x-3">
@@ -520,12 +517,12 @@ const render = {
                         </div>
                         <div>
                             <div class="font-semibold">${attendance.employeeName}</div>
-                            <div class="text-sm text-gray-400">${attendance.position}</div>
+                            <div class="text-sm text-gray-600">${attendance.position}</div>
                         </div>
                     </div>
                 </td>
                 <td class="py-4">
-                    <span class="font-mono text-sm bg-gray-800/50 px-3 py-1 rounded">${attendance.employeeId}</span>
+                    <span class="font-mono text-sm bg-gray-100 px-3 py-1 rounded">${attendance.employeeId}</span>
                 </td>
                 <td class="py-4">
                     <span class="department-badge">${attendance.department}</span>
@@ -534,7 +531,7 @@ const render = {
                 <td class="py-4">
                     <div class="flex flex-col">
                         <span class="text-sm font-medium">${attendance.checkInTime || '-'}</span>
-                        ${attendance.checkOutTime ? `<span class="text-xs text-gray-400">Keluar: ${attendance.checkOutTime}</span>` : ''}
+                        ${attendance.checkOutTime ? `<span class="text-xs text-gray-600">Keluar: ${attendance.checkOutTime}</span>` : ''}
                     </div>
                 </td>
                 <td class="py-4">
@@ -586,12 +583,12 @@ const render = {
         
         TASK_DATA.forEach(task => {
             const row = document.createElement('tr');
-            row.className = 'hover:bg-gray-800/30 transition-colors';
+            row.className = 'hover:bg-gray-100 transition-colors';
             row.innerHTML = `
                 <td class="py-4">
                     <div>
                         <div class="font-semibold">${task.title}</div>
-                        <div class="text-sm text-gray-400">${task.description}</div>
+                        <div class="text-sm text-gray-600">${task.description}</div>
                     </div>
                 </td>
                 <td class="py-4">
@@ -602,7 +599,7 @@ const render = {
                 </td>
                 <td class="py-4">
                     <div class="flex items-center">
-                        <i class="fas fa-calendar-day mr-2 text-gray-400"></i>
+                        <i class="fas fa-calendar-day mr-2 text-gray-600"></i>
                         <span>${utils.formatDate(task.deadline)}</span>
                     </div>
                 </td>
@@ -839,25 +836,6 @@ const eventHandlers = {
                 window.location.href = 'login.html';
             }, 1500);
         });
-    },
-
-    // Theme toggle
-    setupThemeToggle: () => {
-        const savedTheme = localStorage.getItem('presensinex-theme') || 'dark';
-        document.body.classList.toggle('dark-mode', savedTheme === 'dark');
-        
-        elements.themeToggle.innerHTML = savedTheme === 'dark' 
-            ? '<i class="fas fa-sun text-yellow-400 text-xl"></i>'
-            : '<i class="fas fa-moon text-gray-800 text-xl"></i>';
-        
-        elements.themeToggle.addEventListener('click', () => {
-            const isDark = document.body.classList.toggle('dark-mode');
-            localStorage.setItem('presensinex-theme', isDark ? 'dark' : 'light');
-            
-            elements.themeToggle.innerHTML = isDark 
-                ? '<i class="fas fa-sun text-yellow-400 text-xl"></i>'
-                : '<i class="fas fa-moon text-gray-800 text-xl"></i>';
-        });
     }
 };
 
@@ -875,7 +853,6 @@ const initializeApp = () => {
     eventHandlers.setupAttendanceHandlers();
     eventHandlers.setupAttendanceModal();
     eventHandlers.setupLogoutHandlers();
-    eventHandlers.setupThemeToggle();
     
     // Render initial views
     render.renderProfile();
@@ -1044,7 +1021,7 @@ const addDynamicStyles = () => {
             padding: 0.5rem;
             background: rgba(30, 41, 59, 0.8);
             border: 2px solid rgba(251, 191, 36, 0.3);
-            color: var(--gold-primary);
+            color: #fbbf24;
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.3s;
@@ -1052,25 +1029,9 @@ const addDynamicStyles = () => {
         
         .task-action-btn:hover {
             background: rgba(251, 191, 36, 0.1);
-            border-color: var(--gold-primary);
+            border-color: #fbbf24;
             transform: translateY(-2px);
         }
-        
-        /* Dark Mode */
-        .dark-mode {
-            --text-primary: #ffffff;
-            --text-secondary: #cbd5e1;
-            --text-muted: #94a3b8;
-            --bg-primary: #0f172a;
-            --bg-secondary: #1e293b;
-            --bg-card: #1e293b;
-            --bg-hover: #334155;
-            --border-color: #334155;
-            --border-hover: #fbbf24;
-        }
-        
-       
-       
         
         /* Loading Screen Enhancements */
         .loading-screen .relative.w-28.h-28 {
@@ -1079,8 +1040,7 @@ const addDynamicStyles = () => {
             height: 7rem;
         }
         
-        .loading-screen .absolute.inset-0
-         {
+        .loading-screen .absolute.inset-0 {
             position: absolute;
             top: 0;
             right: 0;
@@ -1126,4 +1086,3 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('mobile-view');
     }
 });
-

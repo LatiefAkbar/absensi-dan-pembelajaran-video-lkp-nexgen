@@ -953,7 +953,6 @@ footer {
     color: #60a5fa;
 }
 
-/* ==================== SCROLLBAR ==================== */
 ::-webkit-scrollbar {
     width: 8px;
     height: 8px;
@@ -973,7 +972,7 @@ footer {
     background: linear-gradient(135deg, var(--gold-light) 0%, var(--gold-primary) 100%);
 }
 
-/* ==================== UTILITY CLASSES ==================== */
+
 .hidden {
     display: none !important;
 }
@@ -1106,7 +1105,7 @@ footer {
     z-index: 50;
 }
 
-/* ==================== RESPONSIVE ==================== */
+
 @media (max-width: 768px) {
     .dashboard-header {
         padding: 1.5rem;
@@ -1167,7 +1166,7 @@ footer {
     }
 }
 
-/* ==================== PRINT STYLES ==================== */
+
 @media print {
     .nav-header,
     .tab-nav,

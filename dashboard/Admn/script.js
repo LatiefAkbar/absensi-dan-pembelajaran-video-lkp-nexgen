@@ -538,7 +538,7 @@ function loginSebagaiPeserta() {
         
         showAlert('success', 'Login Berhasil', `Login sebagai ${peserta.name}`);
         setTimeout(() => {
-            window.location.href = 'index.html';
+            window.location.href = 'participant.html';
         }, 1000);
     }
 }
@@ -571,14 +571,13 @@ function loginSebagaiKaryawan() {
         
         showAlert('success', 'Login Berhasil', `Login sebagai ${karyawan.name}`);
         setTimeout(() => {
-            window.location.href = 'karyawan.html'; // Asumsi dashboard karyawan menggunakan index.html yang sama
+            window.location.href = 'karyawan.html'; 
         }, 1000);
     }
 }
 
-// Fungsi untuk akses cepat
+
 function aksesDashboardPeserta(type) {
-    // Gunakan peserta pertama sebagai demo
     const peserta = pesertaData[0];
     if (peserta) {
         const loginData = {
@@ -593,14 +592,11 @@ function aksesDashboardPeserta(type) {
         };
         
         saveLoginData(loginData, 'peserta');
-        
-        // Redirect langsung ke dashboard peserta
-        window.location.href = 'indexpeserta.html';
+        window.location.href = 'participant.html';
     }
 }
 
 function aksesDashboardKaryawan(type) {
-    // Gunakan karyawan pertama sebagai demo
     const karyawan = karyawanData[0];
     if (karyawan) {
         const loginData = {
@@ -616,9 +612,7 @@ function aksesDashboardKaryawan(type) {
         };
         
         saveLoginData(loginData, 'karyawan');
-        
-        // Redirect langsung ke dashboard karyawan
-        window.location.href = 'index.html';
+        window.location.href = 'karyawan.html';
     }
 }
 
@@ -695,7 +689,6 @@ function tutupModal(modalId) {
     modal.classList.add('hidden');
 }
 
-// ==================== UTILITY FUNCTIONS ====================
 function formatDate(dateString) {
     const date = new Date(dateString);
     return date.toLocaleDateString('id-ID', {
@@ -737,7 +730,7 @@ function showAlert(icon, title, text) {
     }, 3000);
 }
 
-// ==================== EVENT LISTENERS ====================
+
 function setupEventListeners() {
     // Logout
     const logoutBtn = document.getElementById('logoutDropdownBtn');
@@ -761,12 +754,10 @@ function setupEventListeners() {
     
     if (confirmLogout) {
         confirmLogout.addEventListener('click', () => {
-            // Hapus semua data login
             clearLoginData();
             
             showAlert('info', 'Logout', 'Anda telah logout dari sistem');
             setTimeout(() => {
-                // Redirect ke halaman login (jika ada) atau tetap di halaman ini
                 window.location.href = 'login.html';
             }, 1500);
         });
@@ -820,8 +811,6 @@ function setupUserProfileDropdown() {
             e.stopPropagation();
             this.classList.toggle('active');
         });
-        
-        // Close dropdown when clicking outside
         document.addEventListener('click', function() {
             userProfile.classList.remove('active');
         });
