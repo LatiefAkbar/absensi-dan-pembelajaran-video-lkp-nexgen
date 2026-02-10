@@ -1,126 +1,141 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Login</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+<?php
+session_start();
+require_once 'config/database.php';
 
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#0A2D55',
-            accent: '#FFD700'
-          }
-        }
-      }
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $database = new Database();
+    $conn = $database->getConnection();
+    
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
+    
+    // Query user
+    $query = "SELECT * FROM users WHERE email = :email";
+    $stmt = $conn->prepare($query);
+    $stmt->execute(['email' => $email]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    var_dump($user['email']);
+    // Verifikasi password (asumsi sudah di-hash)
+    if ($user && password_verify($password, $user['password']) && $user['role'] === 'peserta') {
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user_name'] = $user['nama'];
+        $_SESSION['user_email'] = $user['email'];
+        
+        header("Location: dashboard/participant/index.php");
+        exit();
+    } elseif($user && password_verify($password, $user['password']) && $user['role'] === 'admin') {
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user_name'] = $user['nama'];
+        $_SESSION['user_email'] = $user['email'];
+        
+        header("Location: dashboard/admin/admin.html");
+        exit();
+
+    } elseif($user && password_verify($password, $user['password']) && $user['role'] === 'karyawan') {
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['user_name'] = $user['nama'];
+        $_SESSION['user_email'] = $user['email'];
+        
+        header("Location: dashboard/karyawan/karyawan.html");
+        exit();
+    }else{
+        $error = 'Email atau Password salah';
     }
-  </script>
+}
+?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login - PresensiNex</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css">
 </head>
+<body class="bg-gray-900 min-h-screen flex items-center justify-center">
 
-<body class="min-h-screen flex items-center justify-center bg-slate-100 px-4">
-
-  <div class="w-full max-w-md bg-white rounded-xl shadow-md p-8">
-
-    <!-- Header -->
-    <div class="text-center mb-6">
-      <div class="mx-auto w-14 h-14 bg-accent rounded-xl flex items-center justify-center font-bold text-primary text-xl">
-        PK
-      </div>
-      <h1 class="mt-4 text-2xl font-bold text-primary">PresensiNex</h1>
-      <p class="text-sm text-slate-500 mt-1">Silakan login untuk melanjutkan</p>
+<div class="bg-gray-800 p-8 rounded-xl shadow-2xl max-w-md w-full">
+    <div class="text-center mb-8">
+        <img src="dashboard/participant/logonex.png" style="border-radius: 50%;" alt="Logo" class="w-20 h-20 mx-auto mb-4">
+        <h2 class="text-2xl font-bold text-white">PresensiNex Login</h2>
+        <p class="text-gray-400">Masuk ke dashboard peserta</p>
     </div>
 
-    <!-- NOTIFIKASI ERROR -->
-    <?php if (isset($_GET['error'])): ?>
-      <div id="login-alert"
-        class="mb-5 rounded-lg border p-4 text-sm transition-opacity duration-500
-        <?= $_GET['error'] === 'invalid'
-          ? 'bg-red-50 border-red-300 text-red-700'
-          : 'bg-yellow-50 border-yellow-300 text-yellow-700' ?>">
-        <?= $_GET['error'] === 'invalid'
-          ? 'Email atau password salah'
-          : 'Harap isi email dan password terlebih dahulu.' ?>
-      </div>
+    <?php if (isset($error)): ?>
+    <div class="bg-red-500/20 border border-red-500 text-red-400 p-3 rounded-lg mb-4">
+        <?= $error ?>
+    </div>
     <?php endif; ?>
 
-    <!-- FORM -->
-    <form action="auth/login_process.php" method="POST" class="space-y-5">
-
-      <!-- Email -->
-      <div>
-        <label class="block text-sm font-medium text-primary mb-1">Email</label>
-        <input
-          type="email"
-          name="email"
-          class="w-full rounded-lg border border-slate-300 px-4 py-3 text-sm
-                 focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-          required>
-      </div>
-
-      <!-- Password -->
-      <div>
-        <label class="block text-sm font-medium text-primary mb-1">Password</label>
-
-        <div class="relative">
-          <input
-            type="password"
-            id="password"
-            name="password"
-            class="w-full rounded-lg border border-slate-300 px-4 py-3 pr-12 text-sm
-                   focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary"
-            required>
-
-          <!-- Eye -->
-          <button
-            type="button"
-            id="togglePassword"
-            class="absolute inset-y-0 right-3 flex items-center text-slate-500 hover:text-primary">
-            👁️
-          </button>
+    <form method="POST" class="space-y-4">
+        <div>
+            <label class="block text-gray-400 mb-2">Email</label>
+            <input type="email" name="email" required 
+                   class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white">
         </div>
-      </div>
 
-      <button
-        type="submit"
-        class="w-full bg-primary text-white py-3 rounded-lg font-semibold hover:bg-blue-900 transition">
-        Login
-      </button>
+        <div>
+            <label class="block text-gray-400 mb-2">Password</label>
+            <input type="password" name="password" required 
+                   class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white">
+        </div>
+
+        <div class="flex items-center justify-between">
+            <label class="inline-flex items-center text-gray-400 text-sm">
+                <input type="checkbox" class="form-checkbox h-4 w-4 text-blue-500">
+                <span class="ml-2">Ingat Saya</span>
+            </label>
+
+            <button type="button" id="forgotBtn" class="text-blue-400 text-sm hover:underline">Lupa Password?</button>
+        </div>
+
+        <button type="submit" 
+                class="w-full px-4 py-2 bg-gradient-to-r from-blue-500 to-teal-500 text-white rounded-lg font-semibold hover:opacity-90">
+            Login
+        </button>
     </form>
 
-    <p class="text-center text-xs text-slate-500 mt-6">
-      © 2026 PresensiNex
-    </p>
-  </div>
+    <div class="mt-6 text-center text-gray-400 text-sm">
+        <p>Demo login: ahmad@example.com / password: admin123</p>
+    </div>
+</div>
 
-  <!-- SCRIPT (AMAN & TERPISAH) -->
-  <script>
-    document.addEventListener('DOMContentLoaded', function () {
+<!-- MODAL LUPA PASSWORD -->
+<div id="forgotModal" class="fixed inset-0 hidden items-center justify-center bg-black/40 px-4 z-50">
+    <div class="bg-gray-800 w-full max-w-sm rounded-xl shadow-lg p-6 relative">
+        <h2 class="text-lg font-bold text-white mb-2 flex items-center gap-2">
+            Masukkan Email
+        </h2>
+        <p class="text-sm text-gray-300 mb-4">
+            Masukkan email Anda untuk reset password.
+        </p>
+        <form action="auth/forgot_password_process.php" method="POST" class="space-y-4">
+            <input type="email" name="email" required placeholder="Email Anda"
+                   class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none">
+            <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg font-semibold">
+                Kirim Link Reset
+            </button>
+        </form>
+        <button id="closeModal" class="absolute top-3 right-3 text-gray-400 hover:text-white">
+            &times;
+        </button>
+    </div>
+</div>
 
-      /* ===== AUTO HIDE POPUP ===== */
-      const alertBox = document.getElementById('login-alert');
-      if (alertBox) {
-        setTimeout(() => {
-          alertBox.classList.add('opacity-0');
-          setTimeout(() => alertBox.remove(), 500);
-        }, 3000);
-      }
+<script>
+    const forgotBtn = document.getElementById('forgotBtn');
+    const forgotModal = document.getElementById('forgotModal');
+    const closeModal = document.getElementById('closeModal');
 
-      /* ===== TOGGLE PASSWORD ===== */
-      const toggleBtn = document.getElementById('togglePassword');
-      const passwordInput = document.getElementById('password');
-
-      if (toggleBtn && passwordInput) {
-        toggleBtn.addEventListener('click', () => {
-          passwordInput.type =
-            passwordInput.type === 'password' ? 'text' : 'password';
-        });
-      }
-
+    forgotBtn.addEventListener('click', () => {
+        forgotModal.classList.remove('hidden');
+        forgotModal.classList.add('flex');
     });
-  </script>
+
+    closeModal.addEventListener('click', () => {
+        forgotModal.classList.add('hidden');
+        forgotModal.classList.remove('flex');
+    });
+</script>
 
 </body>
 </html>

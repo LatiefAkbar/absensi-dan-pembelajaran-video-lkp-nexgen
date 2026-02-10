@@ -1,1 +1,0 @@
-<h1>ini adalah halaman peserta</h1>
