@@ -1,13 +1,27 @@
 <?php
+class Database {
+    private $host = "localhost";
+    private $dbname = "pelatihan_db";
+    private $username = "root";
+    private $password = "";
+    private $conn;
 
-$HOST = 'localhost';
-$USERNAME = 'root';
-$PASSWORD = '';
-$DB_NAME = 'db_lkp_nexgen';
-
-$conn = mysqli_connect($HOST, $USERNAME, $PASSWORD, $DB_NAME);
-
-if(!$conn){
-    die('Koneksi gagal');
+    public function getConnection() {
+        $this->conn = null;
+        
+        try {
+            $this->conn = new PDO(
+                "mysql:host=" . $this->host . ";dbname=" . $this->dbname,
+                $this->username,
+                $this->password
+            );
+            $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            $this->conn->exec("set names utf8");
+        } catch(PDOException $e) {
+            die("Connection failed: " . $e->getMessage());
+        }
+        
+        return $this->conn;
+    }
 }
-
+?>
