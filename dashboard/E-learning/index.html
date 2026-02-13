@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PresensiNex - Dashboard E-Learning</title>
+    <link rel="icon" type="image/png" href="logonex.png">
+    <link rel="shortcut icon" href="logonex.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+</head>
+<body class="dark-mode">
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo">
+            <div class="relative w-28 h-28">
+                <div class="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 via-teal-500 to-blue-500 p-1 animate-spin-slow">
+                    <div class="w-full h-full rounded-full bg-gray-900"></div>
+                </div>
+                <div class="absolute inset-2 rounded-full overflow-hidden border-4 border-white/30">
+                    <img src="logonex.png" alt="PresensiNex Logo" class="w-full h-full object-cover">
+                </div>
+                <div class="absolute -inset-2 rounded-full bg-gradient-to-r from-blue-500/20 to-teal-500/20 blur-xl animate-pulse"></div>
+            </div>
+        </div>
+        <div class="spinner"></div>
+        <div class="loading-text">Menyiapkan Dashboard Anda...</div>
+    </div>
+
+    <!-- Logout Modal -->
+    <div class="modal hidden" id="logoutModal">
+        <div class="modal-content max-w-md">
+            <div class="modal-header">
+                <h3 class="text-xl font-bold text-white">Konfirmasi Logout</h3>
+                <p class="text-blue-100">Apakah Anda yakin ingin keluar dari sistem?</p>
+            </div>
+            <div class="modal-body py-6">
+                <div class="flex flex-col items-center mb-6">
+                    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center mb-4">
+                        <i class="fas fa-sign-out-alt text-3xl text-white"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-white mb-2">Logout dari PresensiNex</h4>
+                    <p class="text-gray-400 text-center">Anda akan keluar dari dashboard karyawan</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="flex gap-3">
+                    <button id="cancelLogout" class="btn btn-secondary flex-1">
+                        <i class="fas fa-times mr-2"></i>Batal
+                    </button>
+                    <button id="confirmLogout" class="btn btn-danger flex-1">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+   <!-- Navigation Header -->
+    <nav class="nav-header shadow-xl py-4 px-6 sticky top-0 z-40">
+    <div class="container flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white/20">
+                <img src="logonex.png" alt="PresensiNex" class="w-full h-full object-cover">
+            </div>
+            <div class="leading-tight">
+                <h1 class="text-xl font-bold text-white">PresensiNex</h1>
+                <p class="text-gray-400 text-sm -mt-0.5 font-medium">Dashboard E-Learning</p>
+            </div>
+        </div>
+        
+        <div class="user-profile" id="userProfile">
+            <div class="user-avatar" id="userAvatar">A</div>
+            <div class="user-info">
+                <div class="user-name" id="userName">Ahmad Fauzi</div>
+                <div class="user-role" id="userRole">Peserta</div>
+            </div>
+            <button class="ml-4 px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:opacity-90 transition-all" id="logoutBtn">
+                <i class="fas fa-sign-out-alt mr-2"></i> Logout
+            </button>
+        </div>
+    </div>  
+</nav>
+    <!-- Main Content -->
+    <div class="container mx-auto px-4 py-8">
+        <!-- Dashboard Header -->
+        <div class="mb-8">
+            <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                <div>
+                    <h2 class="text-3xl font-bold gradient-text mb-2">Video Pembelajaran</h2>
+                    <p class="text-gray-400">Pantau video pembelajaran</p>
+                </div>
+            </div>
+
+            <!-- Main Tabs -->
+            <div class="flex space-x-2 mb-6 overflow-x-auto pb-2">
+                <button class="tab-btn px-6 py-3 rounded-lg font-semibold transition-all active" data-tab="videos">
+                    <i class="fas fa-play-circle mr-2"></i>Semua Video
+                </button>
+            </div>
+
+            <!-- Tab Content -->
+            <div id="tabContent">
+                <!-- Semua Video Tab -->
+                <div class="tab-pane active" id="videosTab">
+                    <div class="card p-6 mb-6">
+                        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                            <h3 class="text-xl font-bold">Daftar Video</h3>
+                        </div>
+
+                        <!-- Video Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="videoGrid"></div>
+                        
+                        <!-- Empty State -->
+                        <div id="emptyState" class="text-center py-12 hidden">
+                            <i class="fas fa-video-slash text-5xl text-gray-600 mb-4"></i>
+                            <h4 class="text-xl font-semibold mb-2">Belum ada video</h4>
+                            <p class="text-gray-400 mb-6">Tambahkan video pertama Anda di tab "Upload Video"</p>
+                            <button onclick="window.switchTab('upload')" class="btn-primary">
+                                <i class="fas fa-plus mr-2"></i>Tambah Video Pertama
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                
+
+
+    <!-- Footer -->
+    <footer class="mt-12 py-8">
+        <div class="container mx-auto px-4 text-center">
+            <div class="mb-6">
+                <div class="inline-flex w-16 h-16 rounded-full overflow-hidden border-4 border-white/20 shadow-lg">
+                    <img src="logonex.png" alt="PresensiNex Logo" class="w-full h-full object-cover">
+                </div>
+            </div>
+            
+            <h3 class="text-lg font-bold mb-2 gradient-text">PresensiNex - LKP NexGen</h3>
+            <p class="text-gray-500 text-sm mb-6">Dashboard E-Learning</p>
+            
+            <div class="flex justify-center space-x-6 mb-6">
+                <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">
+                    <i class="fab fa-whatsapp text-lg"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">
+                    <i class="fab fa-instagram text-lg"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">
+                    <i class="fab fa-facebook text-lg"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">
+                    <i class="fas fa-envelope text-lg"></i>
+                </a>
+            </div>
+            
+            <p class="text-gray-600 text-sm">
+                &copy;v2.1.0 © 2026 LKP NexGen.
+            </p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="script.js"></script>
+</body>
+</html>

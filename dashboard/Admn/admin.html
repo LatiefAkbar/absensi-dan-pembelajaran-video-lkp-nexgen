@@ -1,0 +1,1607 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.5, user-scalable=yes">
+    <title>PresensiNex | Dashboard Administrator</title>
+    <link rel="icon" type="image/png" href="logonex.png">
+    <link rel="shortcut icon" href="logonex.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo">
+            <div class="relative w-28 h-28">
+                <div class="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 via-teal-500 to-blue-500 p-1 animate-spin-slow">
+                    <div class="w-full h-full rounded-full bg-gray-900"></div>
+                </div>
+                <div class="absolute inset-2 rounded-full overflow-hidden border-4 border-white/30">
+                    <img src="logonex.png" alt="PresensiNex Logo" class="w-full h-full object-cover">
+                </div>
+                <div class="absolute -inset-2 rounded-full bg-gradient-to-r from-blue-500/20 to-teal-500/20 blur-xl animate-pulse"></div>
+            </div>
+        </div>
+        <div class="spinner"></div>
+        <div class="loading-text">Menyiapkan Dashboard Anda...</div>
+    </div>
+
+     <!-- Navigation Header -->
+    <nav class="nav-header shadow-xl py-4 px-6 sticky top-0 z-40">
+    <div class="container flex justify-between items-center">
+        <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-white/20">
+                <img src="logonex.png" alt="PresensiNex" class="w-full h-full object-cover">
+            </div>
+            <div class="leading-tight">
+                <h1 class="text-xl font-bold text-white">PresensiNex</h1>
+                <p class="text-gray-400 text-sm -mt-0.5 font-medium">Dashboard Administrator</p>
+            </div>
+        </div>
+        
+        <div class="user-profile" id="userProfile">
+            <div class="user-avatar" id="userAvatar">A</div>
+            <div class="user-info">
+                <div class="user-name" id="userName">Ahmad Fauzi</div>
+                <div class="user-role" id="userRole">Administrator</div>
+            </div>
+            <button class="ml-4 px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:opacity-90 transition-all" id="logoutBtn">
+                <i class="fas fa-sign-out-alt mr-2"></i> Logout
+            </button>
+        </div>
+    </div>  
+</nav>
+
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 lg:px-6 py-6 lg:py-8">
+        <!-- Dashboard Header dengan statistik -->
+        <div class="dashboard-header p-5 lg:p-8 mb-6 lg:mb-8">
+            <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center mb-6">
+                <div>
+                    <h2 class="text-2xl lg:text-3xl font-bold text-white mb-2">
+                        Selamat Datang, <span class="gradient-text" id="welcomeName">Super Admin</span>
+                    </h2>
+                    <p class="text-gray-400 text-sm lg:text-base">Kelola semua sistem, data peserta, karyawan, dan konfigurasi dalam satu tempat</p>
+                </div>
+                <div class="mt-4 lg:mt-0 glass-card px-4 py-2 rounded-lg">
+                    <div class="text-xs text-gray-400">Session ID</div>
+                    <div class="font-mono font-semibold text-amber-400 flex items-center gap-2">
+                        <i class="fas fa-shield-alt text-xs"></i>
+                        <span>ADM-001-2026</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Stat Cards dengan hover effect -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4 mt-6">
+                <div class="stat-card p-4 lg:p-5" onclick="showAlert('info', 'Total Peserta', `${adminData?.totalPeserta || 120} peserta terdaftar`)">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-xs lg:text-sm text-gray-400 mb-1">Total Peserta</div>
+                            <div class="text-xl lg:text-2xl font-bold text-white" id="totalPeserta">120</div>
+                            <div class="text-xs text-emerald-400 mt-1">↑ 12% dari bulan lalu</div>
+                        </div>
+                        <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-amber-400/10 flex items-center justify-center">
+                            <i class="fas fa-users text-amber-400 text-xl lg:text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card p-4 lg:p-5" onclick="showAlert('info', 'Total Karyawan', `${adminData?.totalKaryawan || 25} karyawan aktif`)">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-xs lg:text-sm text-gray-400 mb-1">Total Karyawan</div>
+                            <div class="text-xl lg:text-2xl font-bold text-white" id="totalKaryawan">25</div>
+                            <div class="text-xs text-blue-400 mt-1">↑ 2 karyawan baru</div>
+                        </div>
+                        <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-blue-400/10 flex items-center justify-center">
+                            <i class="fas fa-user-tie text-blue-400 text-xl lg:text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card p-4 lg:p-5" onclick="showAlert('info', 'Total Kursus', `${adminData?.totalKursus || 8} kursus aktif`)">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-xs lg:text-sm text-gray-400 mb-1">Total Kursus</div>
+                            <div class="text-xl lg:text-2xl font-bold text-emerald-400" id="totalKursus">8</div>
+                            <div class="text-xs text-emerald-400 mt-1">4 kursus baru</div>
+                        </div>
+                        <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-emerald-400/10 flex items-center justify-center">
+                            <i class="fas fa-graduation-cap text-emerald-400 text-xl lg:text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-card p-4 lg:p-5" onclick="showAlert('info', 'Aktivitas Hari Ini', `${adminData?.totalAktivitas || 47} aktivitas tercatat`)">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-xs lg:text-sm text-gray-400 mb-1">Aktivitas Hari Ini</div>
+                            <div class="text-xl lg:text-2xl font-bold text-amber-400" id="totalAktivitas">47</div>
+                            <div class="text-xs text-amber-400 mt-1">↑ 15% dari kemarin</div>
+                        </div>
+                        <div class="w-10 h-10 lg:w-12 lg:h-12 rounded-full bg-amber-400/10 flex items-center justify-center">
+                            <i class="fas fa-chart-line text-amber-400 text-xl lg:text-2xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab Navigation - Responsive dengan scroll horizontal di mobile -->
+        <div class="tab-nav-container">
+            <div class="tab-nav" id="tabNav">
+                <button class="tab-btn active" data-tab="dashboard">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span class="hidden sm:inline ml-2">Dashboard</span>
+                </button>
+                <button class="tab-btn" data-tab="manage-peserta">
+                    <i class="fas fa-users"></i>
+                    <span class="hidden sm:inline ml-2">Peserta</span>
+                </button>
+                <button class="tab-btn" data-tab="manage-karyawan">
+                    <i class="fas fa-user-tie"></i>
+                    <span class="hidden sm:inline ml-2">Karyawan</span>
+                </button>
+                <button class="tab-btn" data-tab="manage-kursus">
+                    <i class="fas fa-graduation-cap"></i>
+                    <span class="hidden sm:inline ml-2">Kursus</span>
+                </button>
+                <button class="tab-btn" data-tab="upload-materi">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <span class="hidden sm:inline ml-2">Upload</span>
+                </button>
+                <button class="tab-btn" data-tab="akses-dashboard">
+                    <i class="fas fa-external-link-alt"></i>
+                    <span class="hidden sm:inline ml-2">Akses</span>
+                </button>
+                <button class="tab-btn" data-tab="e-learning">
+                    <i class="fas fa-video"></i>
+                    <span class="hidden sm:inline ml-2">E-Learning</span>
+                </button>
+                <button class="tab-btn" data-tab="system">
+                    <i class="fas fa-cogs"></i>
+                    <span class="hidden sm:inline ml-2">Sistem</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Tab Content Container -->
+        <div id="tabContent" class="mt-6 lg:mt-8">
+            <!-- ============ DASHBOARD UTAMA ============ -->
+            <div class="tab-pane active" id="dashboardTab">
+                <!-- Ringkasan & Aksi Cepat -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- Grafik/Ringkasan Sistem -->
+                    <div class="lg:col-span-2">
+                        <div class="card p-5 lg:p-6 h-full">
+                            <div class="flex justify-between items-center mb-6">
+                                <h3 class="text-lg lg:text-xl font-bold text-white">Ringkasan Sistem</h3>
+                                <span class="text-xs bg-amber-400/10 text-amber-400 px-3 py-1 rounded-full">Update real-time</span>
+                            </div>
+                            <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                <div class="metric-card p-4">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <div class="text-2xl lg:text-3xl font-bold text-emerald-400">92%</div>
+                                            <div class="text-xs text-gray-400 mt-1">Kehadiran Peserta</div>
+                                        </div>
+                                        <i class="fas fa-user-check text-emerald-400/50 text-xl"></i>
+                                    </div>
+                                </div>
+                                <div class="metric-card p-4">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <div class="text-2xl lg:text-3xl font-bold text-blue-400">95%</div>
+                                            <div class="text-xs text-gray-400 mt-1">Kehadiran Karyawan</div>
+                                        </div>
+                                        <i class="fas fa-calendar-check text-blue-400/50 text-xl"></i>
+                                    </div>
+                                </div>
+                                <div class="metric-card p-4">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <div class="text-2xl lg:text-3xl font-bold text-amber-400">8</div>
+                                            <div class="text-xs text-gray-400 mt-1">Kursus Aktif</div>
+                                        </div>
+                                        <i class="fas fa-book-open text-amber-400/50 text-xl"></i>
+                                    </div>
+                                </div>
+                                <div class="metric-card p-4">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <div class="text-2xl lg:text-3xl font-bold text-purple-400">12</div>
+                                            <div class="text-xs text-gray-400 mt-1">Coach Aktif</div>
+                                        </div>
+                                        <i class="fas fa-chalkboard-teacher text-purple-400/50 text-xl"></i>
+                                    </div>
+                                </div>
+                                <div class="metric-card p-4">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <div class="text-2xl lg:text-3xl font-bold text-red-400">3</div>
+                                            <div class="text-xs text-gray-400 mt-1">Tugas Tertunda</div>
+                                        </div>
+                                        <i class="fas fa-clock text-red-400/50 text-xl"></i>
+                                    </div>
+                                </div>
+                                <div class="metric-card p-4">
+                                    <div class="flex justify-between items-start">
+                                        <div>
+                                            <div class="text-2xl lg:text-3xl font-bold text-teal-400">100%</div>
+                                            <div class="text-xs text-gray-400 mt-1">Server Uptime</div>
+                                        </div>
+                                        <i class="fas fa-server text-teal-400/50 text-xl"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Progress Overview -->
+                            <div class="mt-6 pt-6 border-t border-gray-800">
+                                <div class="flex justify-between items-center mb-3">
+                                    <h4 class="font-semibold text-white">Progress Kursus</h4>
+                                    <a href="#" class="text-xs text-amber-400 hover:underline" onclick="switchTab('manage-kursus')">Lihat Semua</a>
+                                </div>
+                                <div class="space-y-3">
+                                    <div class="progress-item">
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span class="text-gray-400">Komputer Dasar</span>
+                                            <span class="text-white font-medium">83%</span>
+                                        </div>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 83%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-item">
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span class="text-gray-400">Content Creator</span>
+                                            <span class="text-white font-medium">92%</span>
+                                        </div>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 92%"></div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-item">
+                                        <div class="flex justify-between text-sm mb-1">
+                                            <span class="text-gray-400">Desain Grafis</span>
+                                            <span class="text-white font-medium">78%</span>
+                                        </div>
+                                        <div class="progress-bar">
+                                            <div class="progress-fill" style="width: 78%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions Card -->
+                    <div class="lg:col-span-1">
+                        <div class="card p-5 lg:p-6 h-full">
+                            <h3 class="text-lg lg:text-xl font-bold text-white mb-6 flex items-center gap-2">
+                                <i class="fas fa-bolt text-amber-400"></i>
+                                Aksi Cepat
+                            </h3>
+                            <div class="space-y-3">
+                                <button class="quick-action-btn" onclick="tambahPeserta()">
+                                    <div class="icon-wrapper bg-amber-400/20">
+                                        <i class="fas fa-user-plus text-amber-400"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="font-semibold text-white text-left">Tambah Peserta</div>
+                                        <div class="text-xs text-gray-400 text-left">Daftarkan peserta baru</div>
+                                    </div>
+                                    <i class="fas fa-chevron-right text-gray-500 text-sm"></i>
+                                </button>
+                                <button class="quick-action-btn" onclick="tambahKaryawan()">
+                                    <div class="icon-wrapper bg-blue-400/20">
+                                        <i class="fas fa-user-tie text-blue-400"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="font-semibold text-white text-left">Tambah Karyawan</div>
+                                        <div class="text-xs text-gray-400 text-left">Daftarkan karyawan baru</div>
+                                    </div>
+                                    <i class="fas fa-chevron-right text-gray-500 text-sm"></i>
+                                </button>
+                                <button class="quick-action-btn" onclick="tambahKursus()">
+                                    <div class="icon-wrapper bg-emerald-400/20">
+                                        <i class="fas fa-graduation-cap text-emerald-400"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="font-semibold text-white text-left">Buat Kursus Baru</div>
+                                        <div class="text-xs text-gray-400 text-left">Tambahkan kursus baru</div>
+                                    </div>
+                                    <i class="fas fa-chevron-right text-gray-500 text-sm"></i>
+                                </button>
+                                <button class="quick-action-btn" onclick="generateLaporan()">
+                                    <div class="icon-wrapper bg-purple-400/20">
+                                        <i class="fas fa-file-alt text-purple-400"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="font-semibold text-white text-left">Generate Laporan</div>
+                                        <div class="text-xs text-gray-400 text-left">Buat laporan bulanan</div>
+                                    </div>
+                                    <i class="fas fa-chevron-right text-gray-500 text-sm"></i>
+                                </button>
+                                <button class="quick-action-btn" onclick="switchTab('upload-materi')">
+                                    <div class="icon-wrapper bg-pink-400/20">
+                                        <i class="fas fa-cloud-upload-alt text-pink-400"></i>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="font-semibold text-white text-left">Upload Materi</div>
+                                        <div class="text-xs text-gray-400 text-left">Upload materi kursus</div>
+                                    </div>
+                                    <i class="fas fa-chevron-right text-gray-500 text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Aktivitas Terbaru & Timeline -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Aktivitas Terbaru -->
+                    <div class="lg:col-span-2">
+                        <div class="card p-5 lg:p-6">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                                <div>
+                                    <h3 class="text-lg lg:text-xl font-bold text-white">Aktivitas Terbaru</h3>
+                                    <p class="text-gray-400 text-xs lg:text-sm mt-1">Log aktivitas sistem 24 jam terakhir</p>
+                                </div>
+                                <button class="refresh-btn" onclick="refreshAktivitas()">
+                                    <i class="fas fa-sync-alt"></i>
+                                    <span class="hidden sm:inline ml-2">Refresh</span>
+                                </button>
+                            </div>
+                            <div class="activity-timeline" id="activityTimeline">
+                                <!-- Akan diisi JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Info & Pengumuman -->
+                    <div class="lg:col-span-1">
+                        <div class="card p-5 lg:p-6">
+                            <h3 class="text-lg lg:text-xl font-bold text-white mb-6 flex items-center gap-2">
+                                <i class="fas fa-bullhorn text-amber-400"></i>
+                                Pengumuman
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="announcement-card p-4">
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-amber-400/20 flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-calendar-alt text-amber-400 text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-white text-sm">Maintenance Sistem</h4>
+                                            <p class="text-xs text-gray-400 mt-1">Akan dilakukan maintenance pada 15 Feb 2026, pukul 23:00 - 02:00 WIB</p>
+                                            <span class="text-xs text-amber-400 mt-2 inline-block">2 hari lagi</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="announcement-card p-4">
+                                    <div class="flex items-start gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-emerald-400/20 flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-gift text-emerald-400 text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <h4 class="font-semibold text-white text-sm">Kursus Baru Tersedia</h4>
+                                            <p class="text-xs text-gray-400 mt-1">Kursus "Data Science" sudah dapat didaftarkan</p>
+                                            <span class="text-xs text-emerald-400 mt-2 inline-block">Baru</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ KELOLA PESERTA ============ -->
+            <div class="tab-pane hidden" id="manage-pesertaTab">
+                <div class="card mb-8">
+                    <div class="p-5 lg:p-6 border-b border-gray-800">
+                        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                            <div>
+                                <h3 class="text-lg lg:text-xl font-bold text-white flex items-center gap-2">
+                                    <i class="fas fa-users text-amber-400"></i>
+                                    Kelola Data Peserta
+                                </h3>
+                                <p class="text-gray-400 text-xs lg:text-sm mt-1">Kelola semua data peserta kursus</p>
+                            </div>
+                            <div class="flex flex-wrap gap-2 w-full lg:w-auto">
+                                <button class="btn-primary flex items-center justify-center gap-2" onclick="tambahPeserta()">
+                                    <i class="fas fa-plus-circle"></i>
+                                    <span>Tambah Peserta</span>
+                                </button>
+                                <button class="btn-secondary flex items-center justify-center gap-2" onclick="exportData('peserta')">
+                                    <i class="fas fa-download"></i>
+                                    <span class="hidden sm:inline">Export</span>
+                                </button>
+                                <button class="btn-secondary flex items-center justify-center gap-2" onclick="importData('peserta')">
+                                    <i class="fas fa-upload"></i>
+                                    <span class="hidden sm:inline">Import</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Filter & Search -->
+                    <div class="p-5 lg:p-6 border-b border-gray-800">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+                            <div class="relative">
+                                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
+                                <input type="text" id="searchPeserta" placeholder="Cari nama/email peserta..." 
+                                       class="w-full pl-9 pr-4 py-2.5 bg-gray-800/50 border border-gray-700 rounded-lg text-white text-sm focus:border-amber-400 focus:ring-1 focus:ring-amber-400/30 transition-all">
+                            </div>
+                            <select id="filterKursusPeserta" class="px-4 py-2.5 bg-gray-800/50 border border-gray-700 rounded-lg text-white text-sm focus:border-amber-400 focus:ring-1 focus:ring-amber-400/30">
+                                <option value="">Semua Kursus</option>
+                                <option value="Komputer Dasar">Komputer Dasar</option>
+                                <option value="Content Creator">Content Creator</option>
+                                <option value="Desain Grafis">Desain Grafis</option>
+                                <option value="Digital Marketing">Digital Marketing</option>
+                                <option value="Data Science">Data Science</option>
+                            </select>
+                            <select id="filterStatusPeserta" class="px-4 py-2.5 bg-gray-800/50 border border-gray-700 rounded-lg text-white text-sm focus:border-amber-400 focus:ring-1 focus:ring-amber-400/30">
+                                <option value="">Semua Status</option>
+                                <option value="Aktif">Aktif</option>
+                                <option value="Lulus">Lulus</option>
+                                <option value="Nonaktif">Nonaktif</option>
+                            </select>
+                            <div class="flex gap-2">
+                                <button class="btn-filter flex-1" onclick="filterPeserta()">
+                                    <i class="fas fa-filter mr-2"></i>Filter
+                                </button>
+                                <button class="btn-filter bg-gray-700/50 flex-1" onclick="resetFilterPeserta()">
+                                    <i class="fas fa-undo-alt mr-2"></i>Reset
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Tabel Peserta dengan responsive design -->
+                    <div class="overflow-x-auto">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID Peserta</th>
+                                    <th>Nama</th>
+                                    <th class="hidden md:table-cell">Email</th>
+                                    <th>Kursus</th>
+                                    <th>Status</th>
+                                    <th class="hidden lg:table-cell">Tgl Daftar</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pesertaTableBody">
+                                <!-- Data akan diisi JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="p-4 bg-gray-900/50 border-t border-gray-800">
+                        <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                            <div class="text-sm text-gray-400">
+                                Menampilkan <span id="pesertaStart">1</span>-<span id="pesertaEnd">5</span> dari <span id="pesertaCount">0</span> peserta
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="pagination-btn" id="prevPesertaBtn" disabled>
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <div class="flex items-center space-x-1">
+                                    <span id="currentPesertaPage" class="px-3 py-1.5 bg-amber-400/20 text-amber-400 rounded-lg text-sm">1</span>
+                                    <span class="text-gray-500">/</span>
+                                    <span id="totalPesertaPages" class="text-gray-400 text-sm">1</span>
+                                </div>
+                                <button class="pagination-btn" id="nextPesertaBtn" disabled>
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ KELOLA KARYAWAN ============ -->
+            <div class="tab-pane hidden" id="manage-karyawanTab">
+                <!-- Struktur mirip dengan peserta, dengan data karyawan -->
+                <div class="card mb-8">
+                    <div class="p-5 lg:p-6 border-b border-gray-800">
+                        <div class="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
+                            <div>
+                                <h3 class="text-lg lg:text-xl font-bold text-white flex items-center gap-2">
+                                    <i class="fas fa-user-tie text-amber-400"></i>
+                                    Kelola Data Karyawan
+                                </h3>
+                                <p class="text-gray-400 text-xs lg:text-sm mt-1">Kelola semua data karyawan dan coach</p>
+                            </div>
+                            <div class="flex flex-wrap gap-2">
+                                <button class="btn-primary" onclick="tambahKaryawan()">
+                                    <i class="fas fa-plus-circle mr-2"></i>Tambah
+                                </button>
+                                <button class="btn-secondary" onclick="exportData('karyawan')">
+                                    <i class="fas fa-download mr-2"></i>Export
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Filter & Search -->
+                    <div class="p-5 lg:p-6 border-b border-gray-800">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3 lg:gap-4">
+                            <div class="relative">
+                                <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
+                                <input type="text" id="searchKaryawan" placeholder="Cari nama/email karyawan..." 
+                                       class="w-full pl-9 pr-4 py-2.5 bg-gray-800/50 border border-gray-700 rounded-lg text-white text-sm">
+                            </div>
+                            <select id="filterDepartment" class="px-4 py-2.5 bg-gray-800/50 border border-gray-700 rounded-lg text-white text-sm">
+                                <option value="">Semua Departemen</option>
+                                <option value="Administrasi">Administrasi</option>
+                                <option value="IT">IT</option>
+                                <option value="HRD">HRD</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Finance">Finance</option>
+                                <option value="Coach">Coach</option>
+                            </select>
+                            <select id="filterStatusKaryawan" class="px-4 py-2.5 bg-gray-800/50 border border-gray-700 rounded-lg text-white text-sm">
+                                <option value="">Semua Status</option>
+                                <option value="Aktif">Aktif</option>
+                                <option value="Nonaktif">Nonaktif</option>
+                                <option value="Cuti">Cuti</option>
+                            </select>
+                            <button class="btn-filter" onclick="filterKaryawan()">
+                                <i class="fas fa-filter mr-2"></i>Filter
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tabel Karyawan -->
+                    <div class="overflow-x-auto">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Nama</th>
+                                    <th class="hidden md:table-cell">Email</th>
+                                    <th>Departemen</th>
+                                    <th class="hidden lg:table-cell">Posisi</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="karyawanTableBody">
+                                <!-- Data diisi JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <!-- Pagination -->
+                    <div class="p-4 bg-gray-900/50 border-t border-gray-800">
+                        <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+                            <div class="text-sm text-gray-400">
+                                Menampilkan <span id="karyawanStart">1</span>-<span id="karyawanEnd">5</span> dari <span id="karyawanCount">0</span> karyawan
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button class="pagination-btn" id="prevKaryawanBtn" disabled>
+                                    <i class="fas fa-chevron-left"></i>
+                                </button>
+                                <span class="px-3 py-1.5 bg-amber-400/20 text-amber-400 rounded-lg text-sm" id="currentKaryawanPage">1</span>
+                                <span class="text-gray-500">/</span>
+                                <span class="text-gray-400 text-sm" id="totalKaryawanPages">1</span>
+                                <button class="pagination-btn" id="nextKaryawanBtn" disabled>
+                                    <i class="fas fa-chevron-right"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ KELOLA KURSUS ============ -->
+            <div class="tab-pane hidden" id="manage-kursusTab">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                    <!-- Daftar Kursus -->
+                    <div class="lg:col-span-2">
+                        <div class="card">
+                            <div class="p-5 lg:p-6 border-b border-gray-800">
+                                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                    <div>
+                                        <h3 class="text-lg lg:text-xl font-bold text-white flex items-center gap-2">
+                                            <i class="fas fa-book-open text-amber-400"></i>
+                                            Daftar Kursus Aktif
+                                        </h3>
+                                        <p class="text-gray-400 text-xs lg:text-sm mt-1">Kelola semua kursus yang tersedia</p>
+                                    </div>
+                                    <button class="btn-primary" onclick="tambahKursus()">
+                                        <i class="fas fa-plus-circle mr-2"></i>Kursus Baru
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="p-5 lg:p-6">
+                                <div class="space-y-4" id="kursusListContainer">
+                                    <!-- Kursus akan diisi JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Statistik Kursus -->
+                    <div class="lg:col-span-1">
+                        <div class="card p-5 lg:p-6 h-full">
+                            <h3 class="text-lg lg:text-xl font-bold text-white mb-6 flex items-center gap-2">
+                                <i class="fas fa-chart-pie text-amber-400"></i>
+                                Statistik Kursus
+                            </h3>
+                            <div class="space-y-6">
+                                <div class="stat-detail-item">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-gray-400">Total Peserta</span>
+                                        <span class="text-2xl font-bold text-white" id="statTotalPeserta">120</span>
+                                    </div>
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: 80%"></div>
+                                    </div>
+                                    <div class="flex justify-between text-xs mt-1">
+                                        <span class="text-gray-500">Kapasitas: 150</span>
+                                        <span class="text-emerald-400">80%</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="stat-detail-item">
+                                    <div class="flex justify-between items-center mb-2">
+                                        <span class="text-gray-400">Kursus Terpopuler</span>
+                                        <span class="text-lg font-bold text-emerald-400">Digital Marketing</span>
+                                    </div>
+                                    <div class="text-sm text-gray-400">45 peserta aktif</div>
+                                    <div class="text-xs text-gray-500 mt-1">↑ 12% dari bulan lalu</div>
+                                </div>
+                                
+                                <div class="stat-detail-item p-4 bg-gray-800/30 rounded-lg">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 rounded-full bg-amber-400/20 flex items-center justify-center">
+                                            <i class="fas fa-chalkboard-teacher text-amber-400"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-sm text-gray-400">Coach Aktif</div>
+                                            <div class="text-2xl font-bold text-blue-400">12</div>
+                                            <div class="text-xs text-gray-500">4 coach per kursus</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="grid grid-cols-2 gap-3">
+                                    <div class="p-3 bg-gray-800/30 rounded-lg text-center">
+                                        <div class="text-xl font-bold text-amber-400">8</div>
+                                        <div class="text-xs text-gray-400">Total Kursus</div>
+                                    </div>
+                                    <div class="p-3 bg-gray-800/30 rounded-lg text-center">
+                                        <div class="text-xl font-bold text-purple-400">3</div>
+                                        <div class="text-xs text-gray-400">Kursus Baru</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ UPLOAD MATERI ============ -->
+            <div class="tab-pane hidden" id="upload-materiTab">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Form Upload Materi -->
+                    <div class="lg:col-span-2">
+                        <div class="card mb-6">
+                            <div class="p-5 lg:p-6 border-b border-gray-800">
+                                <h3 class="text-lg lg:text-xl font-bold text-white flex items-center gap-2">
+                                    <i class="fas fa-cloud-upload-alt text-amber-400"></i>
+                                    Upload Materi Baru
+                                </h3>
+                                <p class="text-gray-400 text-xs lg:text-sm mt-1">Upload materi pembelajaran untuk peserta</p>
+                            </div>
+                            
+                            <div class="p-5 lg:p-6">
+                                <form id="formUploadMateri" class="space-y-5">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                        <div>
+                                            <label class="block text-gray-300 text-xs lg:text-sm font-medium mb-2">
+                                                <i class="fas fa-book mr-1 text-amber-400"></i> Pilih Kursus
+                                            </label>
+                                            <select id="selectKursusMateri" class="form-select" required>
+                                                <option value="">-- Pilih Kursus --</option>
+                                                <option value="Komputer Dasar">Komputer Dasar</option>
+                                                <option value="Content Creator">Content Creator</option>
+                                                <option value="Desain Grafis">Desain Grafis</option>
+                                                <option value="Digital Marketing">Digital Marketing</option>
+                                                <option value="Data Science">Data Science</option>
+                                            </select>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="block text-gray-300 text-xs lg:text-sm font-medium mb-2">
+                                                <i class="fas fa-tag mr-1 text-amber-400"></i> Kategori Materi
+                                            </label>
+                                            <select id="selectJenisMateri" class="form-select" required>
+                                                <option value="">-- Pilih Kategori --</option>
+                                                <optgroup label="Komputer Dasar">
+                                                    <option value="Microsoft Word">Microsoft Word</option>
+                                                    <option value="Microsoft Excel">Microsoft Excel</option>
+                                                    <option value="Microsoft PowerPoint">Microsoft PowerPoint</option>
+                                                </optgroup>
+                                                <optgroup label="Content Creator">
+                                                    <option value="Fondasi & Strategi Konten">Fondasi & Strategi Konten</option>
+                                                    <option value="Produksi Konten Video">Produksi Konten Video</option>
+                                                </optgroup>
+                                                <optgroup label="Desain Grafis">
+                                                    <option value="Canva">Canva</option>
+                                                    <option value="Adobe Photoshop">Adobe Photoshop</option>
+                                                </optgroup>
+                                                <optgroup label="Digital Marketing">
+                                                    <option value="Social Media Marketing">Social Media Marketing</option>
+                                                    <option value="Content Marketing">Content Marketing</option>
+                                                </optgroup>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                                        <div>
+                                            <label class="block text-gray-300 text-xs lg:text-sm font-medium mb-2">
+                                                <i class="fas fa-heading mr-1 text-amber-400"></i> Judul Materi
+                                            </label>
+                                            <input type="text" id="judulMateri" class="form-input" 
+                                                   placeholder="Contoh: Tutorial Microsoft Word Dasar" required>
+                                        </div>
+                                        
+                                        <div>
+                                            <label class="block text-gray-300 text-xs lg:text-sm font-medium mb-2">
+                                                <i class="fas fa-calendar mr-1 text-amber-400"></i> Sesi Pertemuan
+                                            </label>
+                                            <select id="sesiMateri" class="form-select" required>
+                                                <option value="">-- Pilih Sesi --</option>
+                                                <option value="1">Pertemuan 1</option>
+                                                <option value="2">Pertemuan 2</option>
+                                                <option value="3">Pertemuan 3</option>
+                                                <option value="4">Pertemuan 4</option>
+                                                <option value="5">Pertemuan 5</option>
+                                                <option value="6">UTS</option>
+                                                <option value="7">Pertemuan 7</option>
+                                                <option value="8">Pertemuan 8</option>
+                                                <option value="9">Pertemuan 9</option>
+                                                <option value="10">Pertemuan 10</option>
+                                                <option value="11">Pertemuan 11</option>
+                                                <option value="12">UAS</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <label class="block text-gray-300 text-xs lg:text-sm font-medium mb-2">
+                                            <i class="fas fa-align-left mr-1 text-amber-400"></i> Deskripsi Materi
+                                        </label>
+                                        <textarea id="deskripsiMateri" class="form-input" rows="3" 
+                                                  placeholder="Deskripsikan materi pembelajaran ini..."></textarea>
+                                    </div>
+                                    
+                                    <!-- Upload Area dengan Drag & Drop -->
+                                    <div>
+                                        <label class="block text-gray-300 text-xs lg:text-sm font-medium mb-2">
+                                            <i class="fas fa-file mr-1 text-amber-400"></i> Upload File
+                                        </label>
+                                        <div class="upload-dropzone" id="dropZone">
+                                            <input type="file" id="fileMateri" class="hidden" 
+                                                   accept=".pdf,.doc,.docx,.ppt,.pptx,.mp4,.avi,.mov,.jpg,.png,.zip">
+                                            <div class="text-center">
+                                                <i class="fas fa-cloud-upload-alt text-4xl lg:text-5xl text-amber-400/70 mb-4"></i>
+                                                <h4 class="text-base lg:text-lg font-semibold text-white mb-2">Drag & Drop atau Klik untuk Upload</h4>
+                                                <p class="text-gray-400 text-xs lg:text-sm mb-3">Format: PDF, DOC, PPT, MP4, JPG, PNG, ZIP (Maks 50MB)</p>
+                                                <button type="button" class="btn-outline text-xs lg:text-sm py-2" onclick="document.getElementById('fileMateri').click()">
+                                                    <i class="fas fa-folder-open mr-2"></i>Pilih File
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div id="fileInfo" class="mt-3 text-sm"></div>
+                                    </div>
+                                    
+                                    <!-- Tipe File -->
+                                    <div>
+                                        <label class="block text-gray-300 text-xs lg:text-sm font-medium mb-3">
+                                            <i class="fas fa-tag mr-1 text-amber-400"></i> Tipe Konten
+                                        </label>
+                                        <div class="flex flex-wrap gap-4">
+                                            <label class="radio-label">
+                                                <input type="radio" name="tipeFile" value="pdf" class="radio-input" checked>
+                                                <span class="radio-custom"></span>
+                                                <span>PDF Document</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="tipeFile" value="video" class="radio-input">
+                                                <span class="radio-custom"></span>
+                                                <span>Video Tutorial</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="tipeFile" value="presentation" class="radio-input">
+                                                <span class="radio-custom"></span>
+                                                <span>Presentasi</span>
+                                            </label>
+                                            <label class="radio-label">
+                                                <input type="radio" name="tipeFile" value="archive" class="radio-input">
+                                                <span class="radio-custom"></span>
+                                                <span>Archive (ZIP/RAR)</span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Tombol Aksi -->
+                                    <div class="flex flex-col sm:flex-row gap-3 pt-4">
+                                        <button type="button" onclick="resetFormMateri()" class="btn-secondary flex-1">
+                                            <i class="fas fa-redo mr-2"></i>Reset
+                                        </button>
+                                        <button type="submit" class="btn-primary flex-1">
+                                            <i class="fas fa-cloud-upload-alt mr-2"></i>Upload Materi
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sidebar: Statistik Upload -->
+                    <div class="lg:col-span-1">
+                        <div class="card p-5 lg:p-6 mb-6">
+                            <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                                <i class="fas fa-chart-simple text-amber-400"></i>
+                                Statistik Upload
+                            </h3>
+                            <div class="space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-400">Total Materi</span>
+                                    <span class="text-xl font-bold text-white" id="statTotalMateri">3</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-400">Minggu Ini</span>
+                                    <span class="text-lg font-semibold text-emerald-400" id="statMateriMingguIni">2</span>
+                                </div>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-gray-400">Bulan Ini</span>
+                                    <span class="text-lg font-semibold text-blue-400" id="statMateriBulanIni">5</span>
+                                </div>
+                                <div class="pt-4 mt-2 border-t border-gray-800">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-8 h-8 rounded-full bg-emerald-400/20 flex items-center justify-center">
+                                            <i class="fas fa-hdd text-emerald-400"></i>
+                                        </div>
+                                        <div>
+                                            <div class="text-xs text-gray-400">Penyimpanan</div>
+                                            <div class="text-sm font-semibold text-white">156 MB / 1 GB</div>
+                                        </div>
+                                    </div>
+                                    <div class="progress-bar mt-2">
+                                        <div class="progress-fill" style="width: 15%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card p-5 lg:p-6">
+                            <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                                <i class="fas fa-clock text-amber-400"></i>
+                                Upload Terbaru
+                            </h3>
+                            <div class="space-y-3" id="recentUploads">
+                                <!-- Recent uploads akan diisi JavaScript -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Daftar Materi yang sudah diupload -->
+                <div class="card mt-6">
+                    <div class="p-5 lg:p-6 border-b border-gray-800">
+                        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                            <div>
+                                <h3 class="text-lg lg:text-xl font-bold text-white flex items-center gap-2">
+                                    <i class="fas fa-list-ul text-amber-400"></i>
+                                    Daftar Materi
+                                </h3>
+                                <p class="text-gray-400 text-xs lg:text-sm mt-1">Semua materi yang telah diupload</p>
+                            </div>
+                            <div class="flex gap-2">
+                                <div class="relative">
+                                    <i class="fas fa-search absolute left-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm"></i>
+                                    <input type="text" id="searchMateri" placeholder="Cari materi..." 
+                                           class="pl-9 pr-4 py-2 bg-gray-800/50 border border-gray-700 rounded-lg text-white text-sm w-48 lg:w-64">
+                                </div>
+                                <button class="btn-filter" onclick="filterMateri()">
+                                    <i class="fas fa-filter"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Tabel Materi -->
+                    <div class="overflow-x-auto">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Kursus</th>
+                                    <th>Judul Materi</th>
+                                    <th class="hidden md:table-cell">File</th>
+                                    <th class="hidden lg:table-cell">Tanggal</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody id="materiTableBody">
+                                <!-- Data diisi JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ AKSES DASHBOARD ============ -->
+            <div class="tab-pane hidden" id="akses-dashboardTab">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <!-- Akses Dashboard Peserta -->
+                    <div class="card p-5 lg:p-6 hover:border-amber-400/50 transition-all">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-gradient-to-br from-amber-400/20 to-yellow-500/20 flex items-center justify-center">
+                                <i class="fas fa-users text-amber-400 text-xl lg:text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg lg:text-xl font-bold text-white">Dashboard Peserta</h3>
+                                <p class="text-gray-400 text-xs lg:text-sm">Akses dan kelola dashboard peserta</p>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4 mb-6">
+                            <div class="p-4 bg-gray-800/30 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <div class="text-gray-400 text-xs">Total Peserta Aktif</div>
+                                        <div class="text-2xl lg:text-3xl font-bold text-white">120</div>
+                                    </div>
+                                    <div class="w-10 h-10 rounded-full bg-emerald-400/20 flex items-center justify-center">
+                                        <i class="fas fa-user-check text-emerald-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-3">
+                                <button onclick="aksesDashboardPeserta('semua')" class="access-btn">
+                                    <i class="fas fa-eye text-blue-400"></i>
+                                    <span class="font-medium">Lihat Semua</span>
+                                </button>
+                                <button onclick="aksesDashboardPeserta('presensi')" class="access-btn">
+                                    <i class="fas fa-calendar-check text-emerald-400"></i>
+                                    <span class="font-medium">Presensi</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Login sebagai Peserta -->
+                        <div class="mt-6 pt-6 border-t border-gray-800">
+                            <label class="block text-gray-300 text-xs lg:text-sm font-medium mb-3">
+                                <i class="fas fa-sign-in-alt mr-1 text-amber-400"></i> Login sebagai Peserta:
+                            </label>
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <select id="selectPeserta" class="form-select flex-1">
+                                    <option value="">-- Pilih Peserta --</option>
+                                </select>
+                                <button onclick="loginSebagaiPeserta()" class="btn-primary px-5">
+                                    <i class="fas fa-sign-in-alt mr-2"></i>Login
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <a href="participant.html" target="_blank" class="block w-full p-3 bg-gradient-to-r from-amber-400/10 to-yellow-500/10 border border-amber-400/30 rounded-lg hover:bg-amber-400/20 transition-all text-center text-sm">
+                                <i class="fas fa-external-link-alt mr-2"></i>
+                                Buka Dashboard Peserta (New Tab)
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Akses Dashboard Karyawan -->
+                    <div class="card p-5 lg:p-6 hover:border-amber-400/50 transition-all">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="w-12 h-12 lg:w-14 lg:h-14 rounded-xl bg-gradient-to-br from-blue-400/20 to-blue-600/20 flex items-center justify-center">
+                                <i class="fas fa-user-tie text-blue-400 text-xl lg:text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg lg:text-xl font-bold text-white">Dashboard Karyawan</h3>
+                                <p class="text-gray-400 text-xs lg:text-sm">Akses dan kelola dashboard karyawan</p>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-4 mb-6">
+                            <div class="p-4 bg-gray-800/30 rounded-lg">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <div class="text-gray-400 text-xs">Total Karyawan Aktif</div>
+                                        <div class="text-2xl lg:text-3xl font-bold text-white">25</div>
+                                    </div>
+                                    <div class="w-10 h-10 rounded-full bg-blue-400/20 flex items-center justify-center">
+                                        <i class="fas fa-briefcase text-blue-400"></i>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="grid grid-cols-2 gap-3">
+                                <button onclick="aksesDashboardKaryawan('semua')" class="access-btn">
+                                    <i class="fas fa-eye text-blue-400"></i>
+                                    <span class="font-medium">Lihat Semua</span>
+                                </button>
+                                <button onclick="aksesDashboardKaryawan('presensi')" class="access-btn">
+                                    <i class="fas fa-clock text-emerald-400"></i>
+                                    <span class="font-medium">Input Presensi</span>
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <!-- Login sebagai Karyawan -->
+                        <div class="mt-6 pt-6 border-t border-gray-800">
+                            <label class="block text-gray-300 text-xs lg:text-sm font-medium mb-3">
+                                <i class="fas fa-sign-in-alt mr-1 text-amber-400"></i> Login sebagai Karyawan:
+                            </label>
+                            <div class="flex flex-col sm:flex-row gap-3">
+                                <select id="selectKaryawan" class="form-select flex-1">
+                                    <option value="">-- Pilih Karyawan --</option>
+                                </select>
+                                <button onclick="loginSebagaiKaryawan()" class="btn-primary px-5">
+                                    <i class="fas fa-sign-in-alt mr-2"></i>Login
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4">
+                            <a href="employee.html" target="_blank" class="block w-full p-3 bg-gradient-to-r from-blue-400/10 to-blue-600/10 border border-blue-400/30 rounded-lg hover:bg-blue-400/20 transition-all text-center text-sm">
+                                <i class="fas fa-external-link-alt mr-2"></i>
+                                Buka Dashboard Karyawan (New Tab)
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Statistik Akses -->
+                <div class="card p-5 lg:p-6">
+                    <h3 class="text-lg lg:text-xl font-bold text-white mb-6 flex items-center gap-2">
+                        <i class="fas fa-chart-line text-amber-400"></i>
+                        Statistik Akses Dashboard
+                    </h3>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        <div class="metric-card p-4 text-center">
+                            <div class="text-2xl lg:text-3xl font-bold text-amber-400">47</div>
+                            <div class="text-xs text-gray-400 mt-1">Login Hari Ini</div>
+                        </div>
+                        <div class="metric-card p-4 text-center">
+                            <div class="text-2xl lg:text-3xl font-bold text-blue-400">12</div>
+                            <div class="text-xs text-gray-400 mt-1">Admin Aktif</div>
+                        </div>
+                        <div class="metric-card p-4 text-center">
+                            <div class="text-2xl lg:text-3xl font-bold text-emerald-400">8</div>
+                            <div class="text-xs text-gray-400 mt-1">Materi Diupload</div>
+                        </div>
+                        <div class="metric-card p-4 text-center">
+                            <div class="text-2xl lg:text-3xl font-bold text-purple-400">156</div>
+                            <div class="text-xs text-gray-400 mt-1">Total Akses</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ E-LEARNING / VIDEO ============ -->
+            <div class="tab-pane hidden" id="e-learningTab">
+                <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <!-- Sidebar Kategori -->
+                    <div class="lg:col-span-1">
+                        <div class="card p-5 lg:p-6 sticky top-24">
+                            <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">
+                                <i class="fas fa-folder-open text-amber-400"></i>
+                                Kategori
+                            </h3>
+                            <div class="space-y-2">
+                                <button class="category-btn active w-full" onclick="filterVideoCategory('all')">
+                                    <i class="fas fa-video mr-2"></i>
+                                    Semua Video
+                                    <span class="ml-auto bg-amber-400/20 text-amber-400 px-2 py-0.5 rounded-full text-xs" id="totalVideoCount">8</span>
+                                </button>
+                                <button class="category-btn w-full" onclick="filterVideoCategory('tutorial')">
+                                    <i class="fas fa-code mr-2"></i>
+                                    Tutorial
+                                    <span class="ml-auto bg-gray-700 text-gray-300 px-2 py-0.5 rounded-full text-xs">4</span>
+                                </button>
+                                <button class="category-btn w-full" onclick="filterVideoCategory('webinar')">
+                                    <i class="fas fa-users mr-2"></i>
+                                    Webinar
+                                    <span class="ml-auto bg-gray-700 text-gray-300 px-2 py-0.5 rounded-full text-xs">2</span>
+                                </button>
+                                <button class="category-btn w-full" onclick="filterVideoCategory('workshop')">
+                                    <i class="fas fa-tools mr-2"></i>
+                                    Workshop
+                                    <span class="ml-auto bg-gray-700 text-gray-300 px-2 py-0.5 rounded-full text-xs">2</span>
+                                </button>
+                            </div>
+                            
+                            <div class="mt-6 pt-6 border-t border-gray-800">
+                                <h4 class="text-sm font-semibold text-white mb-3">Upload Video Baru</h4>
+                                <button class="btn-primary w-full" onclick="openVideoUploadModal()">
+                                    <i class="fas fa-cloud-upload-alt mr-2"></i>
+                                    Upload Video
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Daftar Video -->
+                    <div class="lg:col-span-3">
+                        <div class="card p-5 lg:p-6">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+                                <h3 class="text-lg lg:text-xl font-bold text-white">Daftar Video Pembelajaran</h3>
+                                <div class="flex gap-2">
+                                    <select id="filterVideoLevel" class="form-select text-sm py-2">
+                                        <option value="">Semua Level</option>
+                                        <option value="Pemula">Pemula</option>
+                                        <option value="Menengah">Menengah</option>
+                                        <option value="Lanjutan">Lanjutan</option>
+                                    </select>
+                                    <button class="btn-filter" onclick="applyVideoFilter()">
+                                        <i class="fas fa-filter mr-2"></i>
+                                        Filter
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <!-- Video Grid -->
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="videoGrid">
+                                <!-- Video cards akan diisi JavaScript -->
+                                <div class="video-card p-4">
+                                    <div class="video-thumbnail relative">
+                                        <img src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg" alt="Video Thumbnail" class="w-full h-32 object-cover rounded-lg">
+                                        <span class="absolute bottom-2 right-2 bg-black/70 text-white text-xs px-2 py-1 rounded">12:34</span>
+                                    </div>
+                                    <h4 class="font-semibold text-white mt-3 text-sm">Tutorial Python Dasar</h4>
+                                    <p class="text-gray-400 text-xs mt-1">Pemrograman Dasar</p>
+                                    <div class="flex justify-between items-center mt-3">
+                                        <span class="text-xs bg-amber-400/20 text-amber-400 px-2 py-1 rounded">Pemula</span>
+                                        <button class="text-gray-400 hover:text-amber-400" onclick="playVideo('python-tutorial')">
+                                            <i class="fas fa-play-circle text-lg"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ============ SISTEM ============ -->
+            <div class="tab-pane hidden" id="systemTab">
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Pengaturan Sistem -->
+                    <div class="lg:col-span-2">
+                        <div class="card p-5 lg:p-6">
+                            <h3 class="text-lg lg:text-xl font-bold text-white mb-6 flex items-center gap-2">
+                                <i class="fas fa-cogs text-amber-400"></i>
+                                Pengaturan Sistem
+                            </h3>
+                            
+                            <div class="space-y-6">
+                                <div class="setting-group">
+                                    <h4 class="text-sm font-semibold text-white mb-4">Informasi Aplikasi</h4>
+                                    <div class="space-y-3">
+                                        <div class="setting-item">
+                                            <div class="flex items-center gap-3">
+                                                <i class="fas fa-info-circle text-amber-400"></i>
+                                                <div>
+                                                    <div class="text-gray-400 text-xs">Nama Aplikasi</div>
+                                                    <div class="text-white font-medium">PresensiNex v2.1.0</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="setting-item">
+                                            <div class="flex items-center gap-3">
+                                                <i class="fas fa-database text-emerald-400"></i>
+                                                <div>
+                                                    <div class="text-gray-400 text-xs">Versi Database</div>
+                                                    <div class="text-white font-medium">v2.0.0</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="setting-item">
+                                            <div class="flex items-center gap-3">
+                                                <i class="fas fa-server text-blue-400"></i>
+                                                <div>
+                                                    <div class="text-gray-400 text-xs">Status Server</div>
+                                                    <div class="text-white font-medium flex items-center gap-2">
+                                                        <span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></span>
+                                                        Online (99.9% uptime)
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="setting-group">
+                                    <h4 class="text-sm font-semibold text-white mb-4">Keamanan</h4>
+                                    <div class="space-y-3">
+                                        <div class="flex items-center justify-between p-3 bg-gray-800/30 rounded-lg">
+                                            <div class="flex items-center gap-3">
+                                                <i class="fas fa-shield-alt text-amber-400"></i>
+                                                <div>
+                                                    <div class="font-medium text-white text-sm">Two-Factor Authentication</div>
+                                                    <div class="text-xs text-gray-400">Tambahkan lapisan keamanan ekstra</div>
+                                                </div>
+                                            </div>
+                                            <label class="switch">
+                                                <input type="checkbox" checked>
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+                                        <div class="flex items-center justify-between p-3 bg-gray-800/30 rounded-lg">
+                                            <div class="flex items-center gap-3">
+                                                <i class="fas fa-history text-blue-400"></i>
+                                                <div>
+                                                    <div class="font-medium text-white text-sm">Log Aktivitas</div>
+                                                    <div class="text-xs text-gray-400">Catat semua aktivitas sistem</div>
+                                                </div>
+                                            </div>
+                                            <label class="switch">
+                                                <input type="checkbox" checked>
+                                                <span class="slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Backup & Restore -->
+                    <div class="lg:col-span-1">
+                        <div class="card p-5 lg:p-6">
+                            <h3 class="text-lg lg:text-xl font-bold text-white mb-6 flex items-center gap-2">
+                                <i class="fas fa-database text-amber-400"></i>
+                                Backup & Restore
+                            </h3>
+                            
+                            <div class="space-y-4">
+                                <button class="backup-btn bg-gradient-to-r from-amber-400/20 to-yellow-500/20 border-amber-400/30" onclick="backupDatabase()">
+                                    <i class="fas fa-database text-amber-400 text-xl"></i>
+                                    <div class="text-left">
+                                        <div class="font-bold text-white">Backup Database</div>
+                                        <div class="text-xs text-gray-400">Buat cadangan data</div>
+                                    </div>
+                                </button>
+                                
+                                <button class="backup-btn bg-gradient-to-r from-emerald-400/20 to-green-500/20 border-emerald-400/30" onclick="restoreDatabase()">
+                                    <i class="fas fa-undo-alt text-emerald-400 text-xl"></i>
+                                    <div class="text-left">
+                                        <div class="font-bold text-white">Restore Database</div>
+                                        <div class="text-xs text-gray-400">Pulihkan dari backup</div>
+                                    </div>
+                                </button>
+                                
+                                <button class="backup-btn bg-gradient-to-r from-blue-400/20 to-indigo-500/20 border-blue-400/30" onclick="exportAllData()">
+                                    <i class="fas fa-file-export text-blue-400 text-xl"></i>
+                                    <div class="text-left">
+                                        <div class="font-bold text-white">Export Semua Data</div>
+                                        <div class="text-xs text-gray-400">Excel/PDF/CSV</div>
+                                    </div>
+                                </button>
+                            </div>
+                            
+                            <div class="mt-6 pt-6 border-t border-gray-800">
+                                <h4 class="text-sm font-semibold text-white mb-3">Statistik Database</h4>
+                                <div class="space-y-2">
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-400 text-xs">Ukuran Database</span>
+                                        <span class="font-medium text-white text-sm">245 MB</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-400 text-xs">Backup Terakhir</span>
+                                        <span class="font-medium text-white text-sm">2 hari lalu</span>
+                                    </div>
+                                    <div class="flex justify-between">
+                                        <span class="text-gray-400 text-xs">Total Backup</span>
+                                        <span class="font-medium text-white text-sm">12 file</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+   
+
+    <!-- ============ MODALS ============ -->
+
+   <!-- Logout Modal -->
+    <div class="modal hidden" id="logoutModal">
+        <div class="modal-content max-w-md">
+            <div class="modal-header">
+                <h3 class="text-xl font-bold text-white">Konfirmasi Logout</h3>
+                <p class="text-blue-100">Apakah Anda yakin ingin keluar dari sistem?</p>
+            </div>
+            <div class="modal-body py-6">
+                <div class="flex flex-col items-center mb-6">
+                    <div class="w-20 h-20 rounded-full bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center mb-4">
+                        <i class="fas fa-sign-out-alt text-3xl text-white"></i>
+                    </div>
+                    <h4 class="text-lg font-bold text-white mb-2">Logout dari PresensiNex</h4>
+                    <p class="text-gray-400 text-center">Anda akan keluar dari dashboard karyawan</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="flex gap-3">
+                    <button id="cancelLogout" class="btn btn-secondary flex-1">
+                        <i class="fas fa-times mr-2"></i>Batal
+                    </button>
+                    <button id="confirmLogout" class="btn btn-danger flex-1">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Modal Tambah Peserta -->
+    <div class="modal hidden" id="tambahPesertaModal">
+        <div class="modal-content max-w-2xl">
+            <div class="modal-header">
+                <h3 class="text-xl font-bold text-white">Tambah Peserta Baru</h3>
+                <p class="text-amber-100 text-sm">Daftarkan peserta baru ke sistem</p>
+            </div>
+            <div class="modal-body">
+                <form id="formTambahPeserta" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-300 text-sm font-medium mb-2">Nama Lengkap <span class="text-red-400">*</span></label>
+                            <input type="text" name="nama" class="form-input" placeholder="Masukkan nama lengkap" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 text-sm font-medium mb-2">Email <span class="text-red-400">*</span></label>
+                            <input type="email" name="email" class="form-input" placeholder="peserta@email.com" required>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-300 text-sm font-medium mb-2">Nomor Telepon</label>
+                            <input type="tel" name="telepon" class="form-input" placeholder="08xxxxxxxxxx">
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 text-sm font-medium mb-2">Kursus <span class="text-red-400">*</span></label>
+                            <select name="kursus" class="form-select" required>
+                                <option value="">Pilih Kursus</option>
+                                <option value="Komputer Dasar">Komputer Dasar</option>
+                                <option value="Content Creator">Content Creator</option>
+                                <option value="Desain Grafis">Desain Grafis</option>
+                                <option value="Digital Marketing">Digital Marketing</option>
+                                <option value="Data Science">Data Science</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-medium mb-2">Alamat</label>
+                        <textarea name="alamat" class="form-input" rows="3" placeholder="Alamat lengkap peserta"></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="flex gap-3">
+                    <button type="button" class="btn-secondary flex-1" onclick="tutupModal('tambahPesertaModal')">
+                        <i class="fas fa-times mr-2"></i>Batal
+                    </button>
+                    <button type="submit" form="formTambahPeserta" class="btn-primary flex-1">
+                        <i class="fas fa-save mr-2"></i>Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Karyawan -->
+    <div class="modal hidden" id="tambahKaryawanModal">
+        <div class="modal-content max-w-2xl">
+            <div class="modal-header">
+                <h3 class="text-xl font-bold text-white">Tambah Karyawan Baru</h3>
+                <p class="text-amber-100 text-sm">Daftarkan karyawan baru ke sistem</p>
+            </div>
+            <div class="modal-body">
+                <form id="formTambahKaryawan" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-300 text-sm font-medium mb-2">Nama Lengkap <span class="text-red-400">*</span></label>
+                            <input type="text" name="nama" class="form-input" placeholder="Masukkan nama lengkap" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 text-sm font-medium mb-2">Email <span class="text-red-400">*</span></label>
+                            <input type="email" name="email" class="form-input" placeholder="karyawan@nexgen.com" required>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-300 text-sm font-medium mb-2">Departemen <span class="text-red-400">*</span></label>
+                            <select name="departemen" class="form-select" required>
+                                <option value="">Pilih Departemen</option>
+                                <option value="Administrasi">Administrasi</option>
+                                <option value="IT">IT</option>
+                                <option value="HRD">HRD</option>
+                                <option value="Marketing">Marketing</option>
+                                <option value="Finance">Finance</option>
+                                <option value="Coach">Coach</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 text-sm font-medium mb-2">Posisi <span class="text-red-400">*</span></label>
+                            <input type="text" name="posisi" class="form-input" placeholder="Contoh: Staff IT, Coach" required>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-medium mb-2">Tanggal Bergabung</label>
+                        <input type="date" name="tanggal" class="form-input" value="2026-02-01">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="flex gap-3">
+                    <button type="button" class="btn-secondary flex-1" onclick="tutupModal('tambahKaryawanModal')">
+                        <i class="fas fa-times mr-2"></i>Batal
+                    </button>
+                    <button type="submit" form="formTambahKaryawan" class="btn-primary flex-1">
+                        <i class="fas fa-save mr-2"></i>Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Tambah Kursus -->
+    <div class="modal hidden" id="tambahKursusModal">
+        <div class="modal-content max-w-2xl">
+            <div class="modal-header">
+                <h3 class="text-xl font-bold text-white">Tambah Kursus Baru</h3>
+                <p class="text-amber-100 text-sm">Buat kursus baru untuk peserta</p>
+            </div>
+            <div class="modal-body">
+                <form id="formTambahKursus" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-300 text-sm font-medium mb-2">Nama Kursus <span class="text-red-400">*</span></label>
+                            <input type="text" name="nama" class="form-input" placeholder="Contoh: Data Science" required>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 text-sm font-medium mb-2">Coach <span class="text-red-400">*</span></label>
+                            <select name="coach" class="form-select" required>
+                                <option value="">Pilih Coach</option>
+                                <option value="Ekal Arga Fraizy">Ekal Arga Fraizy</option>
+                                <option value="Faizal Arya Putu Nirmansyah">Faizal Arya</option>
+                                <option value="Afdhal Fauzan">Afdhal Fauzan</option>
+                                <option value="Latif Akbar Maulana">Latif Akbar</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-gray-300 text-sm font-medium mb-2">Level</label>
+                            <select name="level" class="form-select">
+                                <option value="Basic">Basic</option>
+                                <option value="Intermediate">Intermediate</option>
+                                <option value="Advanced">Advanced</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-300 text-sm font-medium mb-2">Kapasitas</label>
+                            <input type="number" name="kapasitas" class="form-input" value="20" min="1" max="100">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-medium mb-2">Deskripsi</label>
+                        <textarea name="deskripsi" class="form-input" rows="3" placeholder="Deskripsi kursus..."></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="flex gap-3">
+                    <button type="button" class="btn-secondary flex-1" onclick="tutupModal('tambahKursusModal')">
+                        <i class="fas fa-times mr-2"></i>Batal
+                    </button>
+                    <button type="submit" form="formTambahKursus" class="btn-primary flex-1">
+                        <i class="fas fa-save mr-2"></i>Simpan
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Upload Video -->
+    <div class="modal hidden" id="uploadVideoModal">
+        <div class="modal-content max-w-lg">
+            <div class="modal-header">
+                <h3 class="text-xl font-bold text-white">Upload Video Baru</h3>
+                <p class="text-amber-100 text-sm">Tambahkan video pembelajaran</p>
+            </div>
+            <div class="modal-body">
+                <form id="formUploadVideo" class="space-y-4">
+                    <div>
+                        <label class="block text-gray-300 text-sm font-medium mb-2">URL Video</label>
+                        <input type="url" id="videoUrl" class="form-input" placeholder="https://www.youtube.com/watch?v=...">
+                        <p class="text-xs text-gray-500 mt-1">YouTube, Vimeo, atau link video langsung</p>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-medium mb-2">Judul Video</label>
+                        <input type="text" id="videoTitle" class="form-input" placeholder="Contoh: Tutorial Python Dasar" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-medium mb-2">Kategori</label>
+                        <select id="videoCategory" class="form-select">
+                            <option value="tutorial">Tutorial</option>
+                            <option value="webinar">Webinar</option>
+                            <option value="workshop">Workshop</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-gray-300 text-sm font-medium mb-2">Level</label>
+                        <select id="videoLevel" class="form-select">
+                            <option value="Pemula">Pemula</option>
+                            <option value="Menengah">Menengah</option>
+                            <option value="Lanjutan">Lanjutan</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <div class="flex gap-3">
+                    <button type="button" class="btn-secondary flex-1" onclick="tutupModal('uploadVideoModal')">Batal</button>
+                    <button type="submit" form="formUploadVideo" class="btn-primary flex-1">Upload</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+<footer class="mt-12 py-8">
+    <div class="container mx-auto px-4 text-center">
+        <div class="mb-6">
+            <div class="inline-flex w-16 h-16 rounded-full overflow-hidden border-4 border-white/20 shadow-lg">
+                <img src="logonex.png" alt="PresensiNex Logo" class="w-full h-full object-cover">
+            </div>
+        </div>
+        
+        <h3 class="text-lg font-bold mb-2 gradient-text">PresensiNex - LKP NexGen</h3>
+        <p class="text-gray-500 text-sm mb-6">Sistem Presensi Digital Peserta</p>
+        
+        <div class="flex justify-center space-x-6 mb-6">
+            <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">
+                <i class="fab fa-whatsapp text-lg"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">
+                <i class="fab fa-instagram text-lg"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">
+                <i class="fab fa-facebook text-lg"></i>
+            </a>
+            <a href="#" class="text-gray-400 hover:text-blue-400 transition-colors">
+                <i class="fas fa-envelope text-lg"></i>
+            </a>
+        </div>
+        
+        <p class="text-gray-600 text-sm">
+            &copy;v2.1.0 © 2026 LKP NexGen.
+        </p>
+    </div>
+</footer>
+
+    
+    <script src="script.js"></script>
+    
+  
+</body>
+</html>
